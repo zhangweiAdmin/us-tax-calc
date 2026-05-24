@@ -1,0 +1,14 @@
+{
+  "name": "us-tax-calculators",
+  "version": "0.1.0",
+  "description": "US state-aware freelance tax, mortgage refinance, and multi-chain staking calculators",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server/index.js",
+    "start": "node server/index.js",
+    "refresh:taxes": "node server/refresh-tax-data.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

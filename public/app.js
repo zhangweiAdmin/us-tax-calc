@@ -1,0 +1,525 @@
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2
+});
+
+const percent2 = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+function formatCurrency(value) {
+  return currency.format(Number(value || 0));
+}
+
+function formatPercent(value) {
+  return `${percent2.format(Number(value || 0))}%`;
+}
+
+function asNumber(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+const FALLBACK_STATES = [
+  ["AL", "Alabama"],
+  ["AK", "Alaska"],
+  ["AZ", "Arizona"],
+  ["AR", "Arkansas"],
+  ["CA", "California"],
+  ["CO", "Colorado"],
+  ["CT", "Connecticut"],
+  ["DE", "Delaware"],
+  ["FL", "Florida"],
+  ["GA", "Georgia"],
+  ["HI", "Hawaii"],
+  ["ID", "Idaho"],
+  ["IL", "Illinois"],
+  ["IN", "Indiana"],
+  ["IA", "Iowa"],
+  ["KS", "Kansas"],
+  ["KY", "Kentucky"],
+  ["LA", "Louisiana"],
+  ["ME", "Maine"],
+  ["MD", "Maryland"],
+  ["MA", "Massachusetts"],
+  ["MI", "Michigan"],
+  ["MN", "Minnesota"],
+  ["MS", "Mississippi"],
+  ["MO", "Missouri"],
+  ["MT", "Montana"],
+  ["NE", "Nebraska"],
+  ["NV", "Nevada"],
+  ["NH", "New Hampshire"],
+  ["NJ", "New Jersey"],
+  ["NM", "New Mexico"],
+  ["NY", "New York"],
+  ["NC", "North Carolina"],
+  ["ND", "North Dakota"],
+  ["OH", "Ohio"],
+  ["OK", "Oklahoma"],
+  ["OR", "Oregon"],
+  ["PA", "Pennsylvania"],
+  ["RI", "Rhode Island"],
+  ["SC", "South Carolina"],
+  ["SD", "South Dakota"],
+  ["TN", "Tennessee"],
+  ["TX", "Texas"],
+  ["UT", "Utah"],
+  ["VT", "Vermont"],
+  ["VA", "Virginia"],
+  ["WA", "Washington"],
+  ["WV", "West Virginia"],
+  ["WI", "Wisconsin"],
+  ["WY", "Wyoming"],
+  ["DC", "District of Columbia"]
+];
+
+let adsenseScriptPromise = null;
+
+function isValidAdSenseClientId(value) {
+  return /^ca-pub-\d{16}$/.test(String(value || "").trim());
+}
+
+function isValidAdSenseSlot(value) {
+  return /^\d{6,}$/.test(String(value || "").trim());
+}
+
+async function loadPublicConfig() {
+  const response = await fetch("/api/public-config");
+  if (!response.ok) throw new Error("Failed to load public config");
+  return response.json();
+}
+
+function ensureAdSenseScript(clientId) {
+  if (adsenseScriptPromise) return adsenseScriptPromise;
+
+  adsenseScriptPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector('script[data-ad-loader="adsense"]');
+    if (existingScript) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.dataset.adLoader = "adsense";
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
+      clientId
+    )}`;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load AdSense script"));
+    document.head.appendChild(script);
+  });
+
+  return adsenseScriptPromise;
+}
+
+function mountAdUnit({ slotSelector, clientId, slot }) {
+  const container = $(slotSelector);
+  if (!container) return;
+
+  container.innerHTML = "";
+  const ad = document.createElement("ins");
+  ad.className = "adsbygoogle";
+  ad.style.display = "block";
+  ad.setAttribute("data-ad-client", clientId);
+  ad.setAttribute("data-ad-slot", slot);
+  ad.setAttribute("data-ad-format", "auto");
+  ad.setAttribute("data-full-width-responsive", "true");
+  container.appendChild(ad);
+
+  window.adsbygoogle = window.adsbygoogle || [];
+  window.adsbygoogle.push({});
+}
+
+async function initAdSense() {
+  try {
+    const config = await loadPublicConfig();
+    const adsense = config?.adsense || {};
+    const clientId = String(adsense.clientId || "").trim();
+    const topSlot = String(adsense.slots?.top || "").trim();
+    const bottomSlot = String(adsense.slots?.bottom || "").trim();
+
+    if (!isValidAdSenseClientId(clientId)) return;
+
+    const units = [
+      { shellSelector: "#adTop", slotSelector: "#adTop .ad-slot", slot: topSlot },
+      { shellSelector: "#adBottom", slotSelector: "#adBottom .ad-slot", slot: bottomSlot }
+    ].filter((unit) => isValidAdSenseSlot(unit.slot));
+
+    if (units.length === 0) return;
+
+    await ensureAdSenseScript(clientId);
+
+    for (const unit of units) {
+      const shell = $(unit.shellSelector);
+      if (!shell) continue;
+      shell.hidden = false;
+      mountAdUnit({
+        slotSelector: unit.slotSelector,
+        clientId,
+        slot: unit.slot
+      });
+    }
+  } catch (error) {
+    console.warn("[adsense] init skipped:", error.message);
+  }
+}
+
+function setMeta(meta) {
+  const status = meta?.sourceStatus || {};
+  const statusText = `Federal: ${status.federal || "unknown"} | States: ${status.states || "unknown"}`;
+
+  $("#metaStatus").textContent = statusText;
+
+  if (meta?.refreshedAt) {
+    const local = new Date(meta.refreshedAt).toLocaleString("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "America/New_York"
+    });
+    $("#metaUpdatedAt").textContent = `Last refreshed: ${local} (ET)`;
+  } else {
+    $("#metaUpdatedAt").textContent = "Refresh time unavailable";
+  }
+}
+
+function bindTabs() {
+  const buttons = $$(".tab-btn");
+  const panels = $$(".tab-panel");
+
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      const tab = button.dataset.tab;
+
+      for (const btn of buttons) {
+        btn.classList.toggle("is-active", btn === button);
+      }
+
+      for (const panel of panels) {
+        panel.classList.toggle("is-active", panel.id === `tab-${tab}`);
+      }
+    });
+  }
+}
+
+function renderFreelanceResult(result) {
+  const el = $("#freelanceResult");
+  const breakdown = result.breakdown;
+
+  const stateNote = result.details?.stateNote
+    ? `<p class="result-note"><strong>State note:</strong> ${result.details.stateNote}</p>`
+    : "";
+
+  const assumptions = (result.assumptions || [])
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  el.innerHTML = `
+    <h2>Estimated Result</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <p class="kpi-label">Total Estimated Tax</p>
+        <p class="kpi-value">${formatCurrency(breakdown.totalEstimatedTax)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Effective Tax Rate</p>
+        <p class="kpi-value">${formatPercent(breakdown.effectiveTaxRate)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Quarterly Estimated Payment</p>
+        <p class="kpi-value">${formatCurrency(breakdown.quarterlyEstimatedPayment)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Net Business Income</p>
+        <p class="kpi-value">${formatCurrency(breakdown.netBusinessIncome)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Federal Income Tax</p>
+        <p class="kpi-value">${formatCurrency(breakdown.federalIncomeTax)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Self-Employment Tax</p>
+        <p class="kpi-value">${formatCurrency(breakdown.selfEmploymentTax)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">State Income Tax</p>
+        <p class="kpi-value">${formatCurrency(breakdown.stateIncomeTax)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Federal Taxable Income</p>
+        <p class="kpi-value">${formatCurrency(breakdown.federalTaxableIncome)}</p>
+      </div>
+    </div>
+    ${stateNote}
+    <ul class="result-list">${assumptions}</ul>
+  `;
+}
+
+function renderMortgageResult(result) {
+  const el = $("#mortgageResult");
+  const b = result.breakdown;
+
+  const breakeven = b.breakevenMonths == null ? "No breakeven" : `${b.breakevenMonths} months`;
+
+  const assumptions = (result.assumptions || [])
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  const goodClass = b.monthlySavings > 0 ? "good" : "";
+
+  el.innerHTML = `
+    <h2>Refinance Projection</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <p class="kpi-label">Current Monthly Payment</p>
+        <p class="kpi-value">${formatCurrency(b.currentMonthlyPayment)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">New Monthly Payment</p>
+        <p class="kpi-value">${formatCurrency(b.newMonthlyPayment)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Monthly Savings</p>
+        <p class="kpi-value ${goodClass}">${formatCurrency(b.monthlySavings)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Breakeven</p>
+        <p class="kpi-value">${breakeven}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Current Total Interest</p>
+        <p class="kpi-value">${formatCurrency(b.currentTotalInterest)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">New Total Interest (+ Costs)</p>
+        <p class="kpi-value">${formatCurrency(b.newTotalInterestWithCosts)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Lifetime Savings</p>
+        <p class="kpi-value ${b.lifetimeSavings > 0 ? "good" : ""}">${formatCurrency(
+          b.lifetimeSavings
+        )}</p>
+      </div>
+    </div>
+    <ul class="result-list">${assumptions}</ul>
+  `;
+}
+
+function renderStakingResult(result, allocationSum) {
+  const el = $("#stakingResult");
+  const b = result.breakdown;
+
+  const chainRows = (result.chains || [])
+    .map(
+      (chain) => `
+      <tr>
+        <td>${chain.name}</td>
+        <td>${chain.allocationPercent.toFixed(2)}%</td>
+        <td>${chain.apyPercent.toFixed(2)}%</td>
+        <td>${formatCurrency(chain.annualGain)}</td>
+      </tr>
+    `
+    )
+    .join("");
+
+  const allocationNote =
+    Math.abs(allocationSum - 100) > 0.01
+      ? `<p class="result-note"><strong>Allocation note:</strong> Your allocations sum to ${allocationSum.toFixed(
+          2
+        )}%. The calculator automatically normalizes weights.</p>`
+      : "";
+
+  const assumptions = (result.assumptions || [])
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  el.innerHTML = `
+    <h2>Yield Projection</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <p class="kpi-label">Principal</p>
+        <p class="kpi-value">${formatCurrency(b.principal)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Ending Balance</p>
+        <p class="kpi-value">${formatCurrency(b.endingBalance)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Annual Gain</p>
+        <p class="kpi-value good">${formatCurrency(b.annualGain)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Portfolio Effective APY</p>
+        <p class="kpi-value">${formatPercent(b.effectivePortfolioApyPercent)}</p>
+      </div>
+    </div>
+    ${allocationNote}
+    <table class="chain-table">
+      <thead>
+        <tr>
+          <th>Chain</th>
+          <th>Weight</th>
+          <th>APY</th>
+          <th>Est. Annual Gain</th>
+        </tr>
+      </thead>
+      <tbody>${chainRows}</tbody>
+    </table>
+    <ul class="result-list">${assumptions}</ul>
+  `;
+}
+
+async function postJson(url, payload) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `Request failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function loadMeta() {
+  const response = await fetch("/api/tax-data/meta");
+  if (!response.ok) throw new Error("Failed to load metadata");
+  const meta = await response.json();
+  setMeta(meta);
+}
+
+async function loadStates() {
+  const select = $("#stateCode");
+  const previous = String(select.value || "CA").toUpperCase();
+
+  const applyStates = (rows) => {
+    select.innerHTML = "";
+    for (const row of rows) {
+      const code = String(row.code || "").toUpperCase();
+      const name = String(row.name || "").trim();
+      if (!code || !name) continue;
+
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = `${name} (${code})`;
+      select.appendChild(option);
+    }
+
+    if (select.options.length === 0) return false;
+    const target = Array.from(select.options).some((opt) => opt.value === previous)
+      ? previous
+      : "CA";
+    select.value = target;
+    return true;
+  };
+
+  try {
+    const response = await fetch("/api/states");
+    if (!response.ok) throw new Error("Failed to load state list");
+    const data = await response.json();
+    const rows = Array.isArray(data.states) ? data.states : [];
+    if (!applyStates(rows)) {
+      throw new Error("State list is empty");
+    }
+  } catch (error) {
+    const fallbackRows = FALLBACK_STATES.map(([code, name]) => ({ code, name }));
+    applyStates(fallbackRows);
+    console.warn("[states] fallback loaded:", error.message);
+  }
+}
+
+function bindForms() {
+  $("#freelanceForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      stateCode: $("#stateCode").value,
+      filingStatus: $("#filingStatus").value,
+      grossIncome: asNumber($("#grossIncome").value),
+      businessExpenses: asNumber($("#businessExpenses").value),
+      otherDeductions: asNumber($("#otherDeductions").value)
+    };
+
+    try {
+      const result = await postJson("/api/calculate/freelance", payload);
+      renderFreelanceResult(result);
+    } catch (error) {
+      $("#freelanceResult").innerHTML = `<h2>Estimated Result</h2><p class="placeholder">${error.message}</p>`;
+    }
+  });
+
+  $("#mortgageForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      currentBalance: asNumber($("#currentBalance").value),
+      currentRate: asNumber($("#currentRate").value),
+      currentTermYears: asNumber($("#currentTermYears").value),
+      newRate: asNumber($("#newRate").value),
+      newTermYears: asNumber($("#newTermYears").value),
+      closingCosts: asNumber($("#closingCosts").value)
+    };
+
+    try {
+      const result = await postJson("/api/calculate/refinance", payload);
+      renderMortgageResult(result);
+    } catch (error) {
+      $("#mortgageResult").innerHTML = `<h2>Refinance Projection</h2><p class="placeholder">${error.message}</p>`;
+    }
+  });
+
+  $("#stakingForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const chains = [1, 2, 3].map((idx) => ({
+      name: $(`[name="chainName${idx}"]`).value,
+      apy: asNumber($(`[name="chainApy${idx}"]`).value),
+      allocation: asNumber($(`[name="chainAllocation${idx}"]`).value)
+    }));
+
+    const allocationSum = chains.reduce((sum, chain) => sum + chain.allocation, 0);
+
+    const payload = {
+      principal: asNumber($("#principal").value),
+      compoundingPerYear: asNumber($("#compoundingPerYear").value),
+      chains
+    };
+
+    try {
+      const result = await postJson("/api/calculate/staking", payload);
+      renderStakingResult(result, allocationSum);
+    } catch (error) {
+      $("#stakingResult").innerHTML = `<h2>Yield Projection</h2><p class="placeholder">${error.message}</p>`;
+    }
+  });
+}
+
+async function init() {
+  bindTabs();
+  bindForms();
+
+  await loadStates();
+
+  try {
+    await loadMeta();
+  } catch (error) {
+    $("#metaStatus").textContent = "Data load failed";
+    $("#metaUpdatedAt").textContent = error.message;
+  }
+
+  await initAdSense();
+}
+
+init();

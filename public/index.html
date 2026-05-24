@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>US Calculator Hub | Freelance Tax, Refinance, Staking</title>
+    <meta
+      name="description"
+      content="State-aware freelance tax estimator with mortgage refinance and multi-chain staking calculators."
+    />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <link rel="canonical" href="__SEO_CANONICAL_URL__" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="US Calculator Hub" />
+    <meta property="og:title" content="US Calculator Hub | Freelance Tax, Refinance, Staking" />
+    <meta
+      property="og:description"
+      content="State-aware freelance tax estimator with mortgage refinance and multi-chain staking calculators."
+    />
+    <meta property="og:url" content="__SEO_CANONICAL_URL__" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="US Calculator Hub | Freelance Tax, Refinance, Staking" />
+    <meta
+      name="twitter:description"
+      content="State-aware freelance tax estimator with mortgage refinance and multi-chain staking calculators."
+    />
+    <meta name="twitter:url" content="__SEO_CANONICAL_URL__" />
+    <script type="application/ld+json">
+      __SEO_STRUCTURED_DATA__
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="background-glow"></div>
+    <header class="site-header">
+      <div class="brand-wrap">
+        <p class="eyebrow">U.S. Calculator Hub</p>
+        <h1>Freelance Tax + Refinance + Staking</h1>
+        <p class="subhead">
+          Built for U.S. workflows: choose your state, model tax categories, and monitor rates refreshed daily.
+        </p>
+      </div>
+      <div class="meta-card">
+        <p class="meta-label">Tax Data Status</p>
+        <p id="metaStatus" class="meta-value">Loading...</p>
+        <p id="metaUpdatedAt" class="meta-help">Checking latest refresh...</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="tab-nav" aria-label="Calculator Tabs">
+        <button class="tab-btn is-active" data-tab="freelance">Freelance Tax</button>
+        <button class="tab-btn" data-tab="mortgage">Mortgage Refinance</button>
+        <button class="tab-btn" data-tab="staking">Crypto Staking</button>
+      </nav>
+
+      <section class="ad-shell" id="adTop" hidden aria-label="Sponsored">
+        <p class="ad-label">Sponsored</p>
+        <div class="ad-slot" data-ad-position="top"></div>
+      </section>
+
+      <section class="tab-panel is-active" id="tab-freelance">
+        <div class="grid">
+          <form id="freelanceForm" class="card form-card">
+            <h2>Freelance Tax Calculator</h2>
+            <p class="card-note">
+              Estimated federal income tax + self-employment tax + state income tax.
+            </p>
+
+            <label for="stateCode">State</label>
+            <select id="stateCode" name="stateCode" required></select>
+
+            <label for="filingStatus">Filing Status</label>
+            <select id="filingStatus" name="filingStatus" required>
+              <option value="single">Single</option>
+              <option value="married_filing_jointly">Married Filing Jointly</option>
+              <option value="head_of_household">Head of Household</option>
+            </select>
+
+            <label for="grossIncome">Annual Gross Freelance Income (USD)</label>
+            <input id="grossIncome" name="grossIncome" type="number" min="0" step="100" value="120000" required />
+
+            <label for="businessExpenses">Business Expenses (USD)</label>
+            <input id="businessExpenses" name="businessExpenses" type="number" min="0" step="100" value="25000" required />
+
+            <label for="otherDeductions">Other Deductions (USD)</label>
+            <input id="otherDeductions" name="otherDeductions" type="number" min="0" step="100" value="0" required />
+
+            <button type="submit" class="primary-btn">Calculate Taxes</button>
+          </form>
+
+          <article class="card result-card" id="freelanceResult">
+            <h2>Estimated Result</h2>
+            <p class="placeholder">Run the calculator to view tax breakdown.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-mortgage">
+        <div class="grid">
+          <form id="mortgageForm" class="card form-card">
+            <h2>Mortgage Refinance Calculator</h2>
+            <p class="card-note">Compare monthly payment, total interest, and breakeven timing.</p>
+
+            <label for="currentBalance">Current Loan Balance (USD)</label>
+            <input id="currentBalance" name="currentBalance" type="number" min="0" step="1000" value="450000" required />
+
+            <label for="currentRate">Current APR (%)</label>
+            <input id="currentRate" name="currentRate" type="number" min="0" step="0.01" value="6.85" required />
+
+            <label for="currentTermYears">Remaining Term (Years)</label>
+            <input id="currentTermYears" name="currentTermYears" type="number" min="1" step="1" value="25" required />
+
+            <label for="newRate">New APR (%)</label>
+            <input id="newRate" name="newRate" type="number" min="0" step="0.01" value="5.95" required />
+
+            <label for="newTermYears">New Term (Years)</label>
+            <input id="newTermYears" name="newTermYears" type="number" min="1" step="1" value="25" required />
+
+            <label for="closingCosts">Closing Costs (USD)</label>
+            <input id="closingCosts" name="closingCosts" type="number" min="0" step="100" value="6500" required />
+
+            <button type="submit" class="primary-btn">Compare Refinance</button>
+          </form>
+
+          <article class="card result-card" id="mortgageResult">
+            <h2>Refinance Projection</h2>
+            <p class="placeholder">Submit inputs to compare scenarios.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-staking">
+        <div class="grid">
+          <form id="stakingForm" class="card form-card">
+            <h2>Multi-Chain Staking Calculator</h2>
+            <p class="card-note">Allocate principal across chains and estimate annual compounded yield.</p>
+
+            <label for="principal">Principal (USD)</label>
+            <input id="principal" name="principal" type="number" min="0" step="100" value="50000" required />
+
+            <label for="compoundingPerYear">Compounding Frequency (times / year)</label>
+            <input id="compoundingPerYear" name="compoundingPerYear" type="number" min="1" step="1" value="12" required />
+
+            <div class="chain-grid">
+              <p class="chain-heading">Chain Allocation</p>
+              <div class="chain-row head">
+                <span>Chain</span><span>APY (%)</span><span>Allocation (%)</span>
+              </div>
+              <div class="chain-row">
+                <input name="chainName1" value="Ethereum" />
+                <input name="chainApy1" type="number" min="0" step="0.01" value="4.8" />
+                <input name="chainAllocation1" type="number" min="0" max="100" step="0.1" value="50" />
+              </div>
+              <div class="chain-row">
+                <input name="chainName2" value="Solana" />
+                <input name="chainApy2" type="number" min="0" step="0.01" value="7.2" />
+                <input name="chainAllocation2" type="number" min="0" max="100" step="0.1" value="30" />
+              </div>
+              <div class="chain-row">
+                <input name="chainName3" value="Cosmos" />
+                <input name="chainApy3" type="number" min="0" step="0.01" value="12" />
+                <input name="chainAllocation3" type="number" min="0" max="100" step="0.1" value="20" />
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Estimate Staking Yield</button>
+          </form>
+
+          <article class="card result-card" id="stakingResult">
+            <h2>Yield Projection</h2>
+            <p class="placeholder">Calculate to see portfolio-level APY and chain breakdown.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="ad-shell" id="adBottom" hidden aria-label="Sponsored">
+        <p class="ad-label">Sponsored</p>
+        <div class="ad-slot" data-ad-position="bottom"></div>
+      </section>
+
+      <section class="footnote-card">
+        <h3>Compliance Notes</h3>
+        <ul>
+          <li>This site provides estimates only and is not legal or tax advice.</li>
+          <li>Tax rates are refreshed daily by server-side scraping from public tax data pages.</li>
+          <li>Always verify with IRS/state authorities or a licensed CPA before filing.</li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
