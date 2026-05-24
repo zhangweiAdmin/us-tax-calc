@@ -10,7 +10,7 @@ if [[ -f "${CONFIG_FILE}" ]]; then
   source "${CONFIG_FILE}"
 fi
 
-VPS_HOST="${VPS_HOST:-97.64.82.143}"
+VPS_HOST="${VPS_HOST:-}"
 VPS_PORT="${VPS_PORT:-22}"
 VPS_USER="${VPS_USER:-root}"
 VPS_APP_DIR="${VPS_APP_DIR:-/opt/us-tax-calc}"
@@ -50,6 +50,13 @@ prompt_password_if_needed() {
     echo
   else
     echo "VPS_PASSWORD is required in non-interactive mode." >&2
+    exit 1
+  fi
+}
+
+validate_required_config() {
+  if [[ -z "${VPS_HOST}" ]]; then
+    echo "VPS_HOST is required (set it in .vps.env or environment)." >&2
     exit 1
   fi
 }
@@ -183,6 +190,7 @@ main() {
   require_cmd ssh
   require_cmd rsync
   require_cmd curl
+  validate_required_config
   prompt_password_if_needed
 
   case "${MODE}" in

@@ -186,7 +186,7 @@ cp .vps.env.example .vps.env
 按需修改 `.vps.env`：
 
 ```bash
-VPS_HOST=97.64.82.143
+VPS_HOST=your_server_ip_or_domain
 VPS_PORT=22
 VPS_USER=root
 VPS_APP_DIR=/opt/us-tax-calc

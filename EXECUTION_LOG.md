@@ -155,3 +155,39 @@ Format:
 - Action: Finalized deliverables and prepared handoff (password changed, scripts validated, docs updated).
 - Result: Ready for user one-click workflow via scripts/vps-tool.sh and `.vps.env` config.
 - Next: User can run login/deploy/deploy-login directly.
+
+## 2026-05-24 23:11:16 CST
+- Step: 24
+- Action: Performed privacy audit before GitHub push.
+- Result: Found that commit history includes EXECUTION_LOG.md and real server IP in deployment defaults/examples.
+- Next: Sanitize tracked files and publish with clean history that excludes sensitive operational details.
+
+## 2026-05-24 23:13:00 CST
+- Step: 25
+- Action: Applied privacy hardening in repo files (`.gitignore`, deployment defaults/examples).
+- Result: Real server IP/password strings removed from tracked config defaults; operational log is now ignored.
+- Next: Build a clean publish history excluding EXECUTION_LOG.md and push to GitHub remote.
+
+## 2026-05-24 23:14:37 CST
+- Step: 26
+- Action: Attempted to create clean publish branch in local repository.
+- Result: Blocked by filesystem restriction: existing `.git` is not writable in this environment (cannot create index.lock).
+- Next: Export sanitized working tree to temp directory, initialize a clean Git repo there, and push to GitHub.
+
+## 2026-05-24 23:15:44 CST
+- Step: 27
+- Action: Exported sanitized code to temp publish directory.
+- Result: First attempt invalid due parallel race (cleanup and rsync overlapped), leaving empty target directory.
+- Next: Re-run export sequentially and verify file completeness before git init.
+
+## 2026-05-24 23:17:41 CST
+- Step: 28
+- Action: Re-exported sanitized project sequentially, initialized clean repo in /private/tmp/us-tax-calc-publish, and created fresh root commit on branch main.
+- Result: Clean history built without EXECUTION_LOG.md and without local private env file.
+- Next: Add GitHub remote and push branch main.
+
+## 2026-05-24 23:20:00 CST
+- Step: 29
+- Action: Added GitHub remote and attempted push via HTTPS and SSH.
+- Result: Push blocked by missing GitHub credentials in current environment (HTTPS username/token unavailable; SSH key not authorized for repo).
+- Next: Obtain one valid GitHub auth path from user (PAT or authorized SSH key) and complete push.
