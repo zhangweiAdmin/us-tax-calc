@@ -1019,3 +1019,15 @@ Format:
 - Action: Committed and pushed current release changes to GitHub.
 - Result: Created commit `f1a84c7 feat: refine navigation and content`; pushed `master` to `origin` successfully (`8707a06..f1a84c7`).
 - Next: Apply this as the default post-deploy workflow for subsequent releases.
+
+## 2026-05-29 22:02:08 CST
+- Step: 168
+- Action: Started author profile enrichment using provided personal details.
+- Result: Collected user-provided fields (nickname, years in finance, specialty, responsibilities, contact email) and mapped them to Authors page profile section.
+- Next: Update Authors page and deploy.
+
+## 2026-05-29 22:02:08 CST
+- Step: 169
+- Action: Updated Authors page with contributor profile card and deployed.
+- Result: Added Contributor Profile section for Coco in `public/authors/index.html`; production deployment succeeded; live `/authors/` includes the new profile details and contact mailto link.
+- Next: Commit and push to remote repository per release-sync rule.
