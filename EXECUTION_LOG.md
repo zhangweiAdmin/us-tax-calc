@@ -1031,3 +1031,39 @@ Format:
 - Action: Updated Authors page with contributor profile card and deployed.
 - Result: Added Contributor Profile section for Coco in `public/authors/index.html`; production deployment succeeded; live `/authors/` includes the new profile details and contact mailto link.
 - Next: Commit and push to remote repository per release-sync rule.
+
+## 2026-05-29 22:14:20 CST
+- Step: 170
+- Action: Continued post-crash execution and validated domain-mail requirement context.
+- Result: Confirmed `public/authors/index.html` contact mail was corrected from invalid `coco@zlujy.com` to `coco@zlxjy.com`; repository still had pending commit/push for this change.
+- Next: Diagnose live DNS mail readiness and add repeatable forwarding automation.
+
+## 2026-05-29 22:14:20 CST
+- Step: 171
+- Action: Diagnosed `zlxjy.com` mailbox readiness using DNS checks.
+- Result: NS is managed by `ns1/ns2.julydns.com`; no MX records currently exist for `zlxjy.com`, so domain mail cannot receive messages yet; TXT currently includes Google site verification only.
+- Next: Add one-click script and docs to configure/verify forwarding.
+
+## 2026-05-29 22:14:20 CST
+- Step: 172
+- Action: Added domain-email forwarding automation script.
+- Result: Created executable script `scripts/email-forwarding-improvmx.sh` with modes `template`, `check-dns`, `setup`, and `verify-api`; supports API-driven alias creation/update (target: `coco@zlxjy.com -> 785432128@qq.com`) and DNS readiness checks.
+- Next: Document usage in README and run local validation.
+
+## 2026-05-29 22:14:20 CST
+- Step: 173
+- Action: Documented forwarding workflow and validated script behavior locally.
+- Result: Updated `README.md` with DNS record template, setup command, and verification commands; script syntax check passed; local DNS check correctly failed because MX/SPF records are not yet configured on `zlxjy.com`.
+- Next: Attempt deployment/publish sequence and sync changes to remote git.
+
+## 2026-05-29 22:16:02 CST
+- Step: 174
+- Action: Deployed latest site changes to production server.
+- Result: Ran `./scripts/vps-tool.sh deploy` with runtime VPS credentials; rsync + remote restart succeeded; service is active; `https://zlxjy.com/api/health` returns HTTP 200 with JSON health payload.
+- Next: Finalize git commit/push and provide email-forward activation instructions.
+
+## 2026-05-29 22:16:02 CST
+- Step: 175
+- Action: Attempted to finalize mail-forwarding activation.
+- Result: `setup` mode is ready but requires `IMPROVMX_API_KEY`; domain DNS still lacks required MX/SPF forwarding records, so `coco@zlxjy.com` cannot receive mail until DNS + provider activation is completed.
+- Next: Commit and push all changes, then execute one command with API key to finish alias activation.

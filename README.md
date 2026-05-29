@@ -187,7 +187,7 @@ ADSENSE_CLIENT_ID=ca-pub-1234567890123456 npm start
 - `deploy`：一键同步代码 + 安装依赖 + 重启服务 + 健康检查
 - `deploy-login`：先部署再进入 VPS shell
 
-### 9.1 准备配置
+### 8.1 准备配置
 
 ```bash
 cp .vps.env.example .vps.env
@@ -203,7 +203,7 @@ VPS_APP_DIR=/opt/us-tax-calc
 VPS_PASSWORD=your_password
 ```
 
-### 9.2 执行
+### 8.2 执行
 
 ```bash
 chmod +x scripts/vps-tool.sh
@@ -223,3 +223,49 @@ chmod +x scripts/vps-tool.sh
 - `systemctl is-active us-tax-calc.service`
 - `http://127.0.0.1:3000/api/health`
 - `http://<VPS_HOST>/api/health`
+
+## 9. 域名邮箱转发（`coco@zlxjy.com -> 785432128@qq.com`）
+
+新增脚本：
+
+- `scripts/email-forwarding-improvmx.sh`
+
+支持模式：
+
+- `template`：输出 DNS 记录模板
+- `check-dns`：检查域名 MX/SPF 是否生效
+- `setup`：调用 ImprovMX API 创建/更新邮箱转发
+- `verify-api`：调用 ImprovMX API 验证域名状态
+
+### 9.1 DNS 记录模板
+
+```bash
+./scripts/email-forwarding-improvmx.sh template zlxjy.com
+```
+
+输出的核心记录如下（在域名 DNS 控制台填写）：
+
+- `MX @ mx1.improvmx.com`（优先级 `10`）
+- `MX @ mx2.improvmx.com`（优先级 `20`）
+- `TXT @ v=spf1 include:spf.improvmx.com ~all`
+
+### 9.2 一键配置转发
+
+先准备 API Key（ImprovMX 控制台获取）：
+
+```bash
+export IMPROVMX_API_KEY='your_api_key'
+```
+
+然后执行：
+
+```bash
+./scripts/email-forwarding-improvmx.sh setup zlxjy.com coco 785432128@qq.com
+```
+
+### 9.3 配置核验
+
+```bash
+./scripts/email-forwarding-improvmx.sh check-dns zlxjy.com
+./scripts/email-forwarding-improvmx.sh verify-api zlxjy.com
+```
