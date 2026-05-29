@@ -1,0 +1,60 @@
+<svg width="1600" height="360" viewBox="0 0 1600 360" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Editorial authors desk banner illustration</title>
+  <desc id="desc">Wide banner with contributor cards, profile blocks, and review marks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F3F7FF"/>
+      <stop offset="1" stop-color="#FDF1E8"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#FFFCF7" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="360" rx="26" fill="url(#bg)"/>
+
+  <rect x="38" y="34" width="496" height="292" rx="20" fill="url(#card)" stroke="#D9D1C3"/>
+  <rect x="72" y="64" width="184" height="16" rx="8" fill="#E6EEF9"/>
+  <rect x="72" y="92" width="420" height="10" rx="5" fill="#ECE3D5"/>
+  <rect x="72" y="110" width="388" height="10" rx="5" fill="#ECE3D5"/>
+  <rect x="72" y="134" width="420" height="156" rx="14" fill="#F8F4EC" stroke="#E5DDCF"/>
+
+  <path d="M98 260L156 228L212 238L274 192L338 214L406 168L470 188" stroke="#0E5EA8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#CB4F2F" fill-opacity="0.26">
+    <circle cx="156" cy="228" r="7"/>
+    <circle cx="212" cy="238" r="7"/>
+    <circle cx="274" cy="192" r="7"/>
+    <circle cx="338" cy="214" r="7"/>
+    <circle cx="406" cy="168" r="7"/>
+    <circle cx="470" cy="188" r="7"/>
+  </g>
+
+  <rect x="560" y="34" width="496" height="292" rx="20" fill="url(#card)" stroke="#D9D1C3"/>
+  <rect x="594" y="64" width="166" height="16" rx="8" fill="#EAF2FF"/>
+  <rect x="594" y="96" width="430" height="12" rx="6" fill="#EEE6DA"/>
+
+  <g fill="#FDF8F0" stroke="#E7DDCE">
+    <rect x="594" y="124" width="128" height="162" rx="14"/>
+    <rect x="744" y="124" width="128" height="162" rx="14"/>
+    <rect x="894" y="124" width="130" height="162" rx="14"/>
+  </g>
+  <g stroke="#CB4F2F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M632 212L656 234L694 176"/>
+    <path d="M782 212L806 234L844 176"/>
+    <path d="M932 212L956 234L994 176"/>
+  </g>
+
+  <rect x="1082" y="34" width="480" height="292" rx="20" fill="url(#card)" stroke="#D9D1C3"/>
+  <rect x="1116" y="64" width="178" height="16" rx="8" fill="#FDE9DD"/>
+  <rect x="1116" y="98" width="408" height="12" rx="6" fill="#F0E8DC"/>
+
+  <circle cx="1180" cy="184" r="44" fill="#E8F1FF" stroke="#CBDCF4"/>
+  <circle cx="1320" cy="168" r="38" fill="#EEF7EE" stroke="#CCE2CC"/>
+  <circle cx="1450" cy="202" r="46" fill="#FFF0E3" stroke="#EAD5C5"/>
+
+  <rect x="1236" y="178" width="52" height="8" rx="4" fill="#C6D1E1"/>
+  <rect x="1364" y="164" width="56" height="8" rx="4" fill="#C6D1E1"/>
+
+  <rect x="1116" y="252" width="406" height="10" rx="5" fill="#EFE7DA"/>
+  <rect x="1116" y="272" width="364" height="10" rx="5" fill="#EFE7DA"/>
+</svg>

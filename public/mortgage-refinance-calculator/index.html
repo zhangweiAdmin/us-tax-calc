@@ -39,7 +39,7 @@
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-initial-tab="freelance">
+  <body data-initial-tab="mortgage">
     <div class="background-glow"></div>
     <header class="site-header">
       <div class="brand-wrap">
@@ -88,133 +88,132 @@
       </nav>
       <figure class="media-spot">
         <img
-          src="/media/freelance-tax-map.svg"
-          alt="Freelance tax planning dashboard illustration with calendar and reserve trend."
+          src="/media/mortgage-notes.svg"
+          alt="Mortgage refinance comparison illustration with breakeven chart and loan estimate cards."
           loading="lazy"
           decoding="async"
         />
-        <figcaption>Visual note: monthly reserve habits usually matter more than one-time filing effort.</figcaption>
+        <figcaption>Visual note: compare breakeven timing against real holding period, not best-case assumptions.</figcaption>
       </figure>
 
       <section class="guide-card">
-        <h3>Freelance Tax Planning, Built For Real Cash Flow</h3>
+        <h3>Refinance Decisions Need Context, Not Just A Lower Rate</h3>
         <p>
-          This page is intentionally focused on one job: helping freelancers estimate federal tax, self-employment tax,
-          and state income tax from business inputs you can gather in a few minutes. Instead of mixing three calculators
-          on one screen, we keep this route dedicated to freelance planning so assumptions stay clear and decisions stay
-          fast.
+          This route is dedicated to refinance screening. The calculator helps you compare your current loan with a
+          proposed loan using the numbers that usually decide outcomes in practice: monthly payment delta, breakeven
+          timing, and total lifetime interest impact after closing costs.
         </p>
         <p>
-          If you need mortgage or staking planning, use the dedicated pages in the top navigation. Each route has its
-          own framework, examples, and FAQ so the content is easier to validate and maintain.
+          Many homeowners only compare APR headline and miss tenure risk. Here we center the decision on expected time
+          in the property and cash-to-close reality, because that is where most avoidable mistakes happen.
         </p>
       </section>
 
       <div class="grid">
-        <form id="freelanceForm" class="card form-card">
-          <h2>Freelance Tax Calculator</h2>
-          <p class="card-note">Estimated federal income tax + self-employment tax + state income tax.</p>
+        <form id="mortgageForm" class="card form-card">
+          <h2>Mortgage Refinance Calculator</h2>
+          <p class="card-note">Compare monthly payment, total interest, and breakeven timing.</p>
           <div class="form-grid">
+            <div class="field">
+              <label for="currentBalance">Current Loan Balance (USD)</label>
+              <input id="currentBalance" name="currentBalance" type="number" min="0" step="1000" value="450000" required />
+            </div>
+
             <div class="form-row form-row-2">
               <div class="field">
-                <label for="stateCode">State</label>
-                <select id="stateCode" name="stateCode" required></select>
+                <label for="currentRate">Current APR (%)</label>
+                <input id="currentRate" name="currentRate" type="number" min="0" step="0.01" value="6.85" required />
               </div>
               <div class="field">
-                <label for="filingStatus">Filing Status</label>
-                <select id="filingStatus" name="filingStatus" required>
-                  <option value="single">Single</option>
-                  <option value="married_filing_jointly">Married Filing Jointly</option>
-                  <option value="head_of_household">Head of Household</option>
-                </select>
+                <label for="currentTermYears">Remaining Term (Years)</label>
+                <input
+                  id="currentTermYears"
+                  name="currentTermYears"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="25"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="newRate">New APR (%)</label>
+                <input id="newRate" name="newRate" type="number" min="0" step="0.01" value="5.95" required />
+              </div>
+              <div class="field">
+                <label for="newTermYears">New Term (Years)</label>
+                <input id="newTermYears" name="newTermYears" type="number" min="1" step="1" value="25" required />
               </div>
             </div>
 
             <div class="field">
-              <label for="grossIncome">Annual Gross Freelance Income (USD)</label>
-              <input id="grossIncome" name="grossIncome" type="number" min="0" step="100" value="120000" required />
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="businessExpenses">Business Expenses (USD)</label>
-                <input
-                  id="businessExpenses"
-                  name="businessExpenses"
-                  type="number"
-                  min="0"
-                  step="100"
-                  value="25000"
-                  required
-                />
-              </div>
-              <div class="field">
-                <label for="otherDeductions">Other Deductions (USD)</label>
-                <input id="otherDeductions" name="otherDeductions" type="number" min="0" step="100" value="0" required />
-              </div>
+              <label for="closingCosts">Closing Costs (USD)</label>
+              <input id="closingCosts" name="closingCosts" type="number" min="0" step="100" value="6500" required />
             </div>
           </div>
 
-          <button type="submit" class="primary-btn">Calculate Taxes</button>
+          <button type="submit" class="primary-btn">Compare Refinance</button>
         </form>
 
-        <article class="card result-card" id="freelanceResult">
-          <h2>Estimated Result</h2>
-          <p class="placeholder">Run the calculator to view tax breakdown.</p>
+        <article class="card result-card" id="mortgageResult">
+          <h2>Refinance Projection</h2>
+          <p class="placeholder">Submit inputs to compare scenarios.</p>
         </article>
       </div>
 
       <section class="guide-card">
-        <h3>How This Estimate Works</h3>
+        <h3>How To Interpret The Output</h3>
         <p>
-          We start from gross freelance income, subtract business expenses, then estimate self-employment tax and
-          federal/state income tax based on your filing status and selected state. The output is directional planning
-          data, not a filed return.
+          Breakeven month tells you how long monthly savings need to recover upfront costs. If your likely move date is
+          earlier than breakeven, a refinance can still feel attractive but often underperforms in real cash terms.
         </p>
-        <h3>Use It In A Repeatable Routine</h3>
+        <h3>Three Checks Before You Commit</h3>
         <ul>
-          <li>Update income and expense numbers at least once per month.</li>
-          <li>Compare quarterly estimate against your tax reserve account balance.</li>
-          <li>Re-run after major income changes, not only at deadline week.</li>
+          <li>Compare at least two loan estimates from different lenders.</li>
+          <li>Test a conservative move-out timeline, not the optimistic case.</li>
+          <li>Verify final closing disclosure lines against your assumptions.</li>
         </ul>
       </section>
 
       <section class="faq-card">
-        <h3>Freelance Tax FAQ</h3>
+        <h3>Mortgage Refinance FAQ</h3>
         <dl>
-          <dt>Should I include non-freelance W-2 income in this tool?</dt>
+          <dt>What does breakeven month actually represent?</dt>
           <dd>
-            No. This page is meant for freelance business income planning. If you also have W-2 wages, use this as a
-            partial estimate and combine it with a full tax projection before filing.
+            It is the number of months needed for monthly savings to recover the upfront closing cost. If you sell
+            before that point, the refinance usually does not pay for itself.
           </dd>
-          <dt>Why does self-employment tax look high?</dt>
+          <dt>Why can my monthly payment drop but lifetime interest still rise?</dt>
           <dd>
-            Self-employment tax covers both the employee and employer portions of Social Security and Medicare, so it
-            is usually higher than first-time freelancers expect.
+            Extending the loan term can lower monthly payment while increasing total interest paid over time. Always
+            evaluate payment comfort and lifetime cost together.
           </dd>
-          <dt>Can I rely on this for quarterly estimates?</dt>
+          <dt>Should I refinance if rates are only slightly lower?</dt>
           <dd>
-            Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account
-            for credits, prior-year safe harbor rules, and any other household income.
+            Sometimes yes, sometimes no. Small rate improvements can still work if balance is large and fees are
+            controlled, but you should test realistic closing-cost assumptions.
           </dd>
-          <dt>How often are tax assumptions refreshed?</dt>
+          <dt>Does the calculator include points and prepaid items?</dt>
           <dd>
-            The backend refreshes source tax tables regularly and stores update metadata. If live fetching fails, the
-            app falls back to the last successful dataset to avoid downtime.
+            Only if you include them in the closing-cost input. The tool treats closing costs as an upfront cash amount
+            for breakeven and lifetime comparison.
           </dd>
-          <dt>Which filing statuses are supported?</dt>
+          <dt>Can I use this for adjustable-rate mortgages?</dt>
           <dd>
-            Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan
-            to keep bracket assumptions aligned.
+            Not directly. The model assumes fixed rates for both current and new loans, so ARM scenarios need a more
+            detailed projection with future rate paths.
           </dd>
         </dl>
       </section>
       <section class="footnote-card">
         <h3>Compliance Notes</h3>
         <ul>
-          <li>This site provides estimates only and is not legal or tax advice.</li>
-          <li>Tax rates are refreshed daily by server-side scraping from public tax data pages.</li>
-          <li>Always verify with IRS/state authorities or a licensed CPA before filing.</li>
+          <li>This calculator provides planning estimates only.</li>
+          <li>For binding loan decisions, confirm terms with your lender and advisor.</li>
+          <li>Rate and fee assumptions should be rechecked before lock.</li>
         </ul>
       </section>
     </main>

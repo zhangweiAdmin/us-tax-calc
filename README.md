@@ -84,7 +84,6 @@ POST /api/admin/refresh-taxes?token=your_token
 ## 4. API 概览
 
 - `GET /api/health`
-- `GET /api/public-config`
 - `GET /api/tax-data/meta`
 - `GET /api/states`
 - `GET /api/tax-data?state=CA`
@@ -94,26 +93,9 @@ POST /api/admin/refresh-taxes?token=your_token
 - `POST /api/admin/refresh-taxes`
 - `GET /robots.txt`
 - `GET /sitemap.xml`
+- `GET /ads.txt`
 
-## 5. 接入 Google AdSense
-
-项目已内置 AdSense 广告位（页面顶部 + 底部），通过环境变量开启：
-
-```bash
-ADSENSE_CLIENT_ID=ca-pub-1234567890123456 \
-ADSENSE_SLOT_TOP=1234567890 \
-ADSENSE_SLOT_BOTTOM=9876543210 \
-npm start
-```
-
-说明：
-
-- `ADSENSE_CLIENT_ID` 必须是 `ca-pub-` 开头的发布商 ID。
-- `ADSENSE_SLOT_TOP` / `ADSENSE_SLOT_BOTTOM` 是对应广告单元 slot ID（数字）。
-- 未配置或格式不合法时，前端会自动跳过广告渲染，不影响计算器功能。
-- 本地 `localhost` 调试时可能不展示真实广告位，线上域名通过审核后会正常填充。
-
-## 6. SEO 优化与配置
+## 5. SEO 优化与配置
 
 项目已内置以下 SEO 技术项：
 
@@ -134,7 +116,35 @@ SITE_URL=https://your-domain.com npm start
 2. 使用 Search Console 的 URL 检查工具请求首页重新抓取
 3. 每次关键内容改动后复查 “已编入索引” 状态和抓取错误
 
-## 7. 目录结构
+## 5.1 长文内容库
+
+项目已内置可重复生成的长文页面脚本（每篇自动校验不少于 800 词）：
+
+```bash
+node scripts/generate-articles.mjs
+```
+
+执行后会生成：
+
+- `public/articles/index.html`（文章列表页）
+- `public/articles/<slug>/index.html`（20 篇文章页）
+- `public/articles/manifest.json`（标题、slug、字数清单）
+
+## 5.2 AdSense 审核代码（仅站点验证）
+
+如需向 AdSense 提交站点审核，可在生产环境配置：
+
+```bash
+ADSENSE_CLIENT_ID=ca-pub-1234567890123456 npm start
+```
+
+说明：
+
+- 仅在配置合法 `ca-pub-` ID 时，服务端会向 HTML `<head>` 注入审核脚本。
+- 同时会输出 `GET /ads.txt`（未配置时返回占位提示）。
+- 当前不自动渲染页面广告位，仅用于站点审核与所有权验证。
+
+## 6. 目录结构
 
 ```text
 .
@@ -159,13 +169,13 @@ SITE_URL=https://your-domain.com npm start
 └── README.md
 ```
 
-## 8. 合规提示
+## 7. 合规提示
 
 - 当前结果是估算器，不是报税申报结果。
 - 未覆盖全部税务细节（例如地方税、全部抵免、AMT、特定 pass-through 规则）。
 - 用于报税前请务必以 IRS / 州税务部门和注册税务师意见为准。
 
-## 9. 一键登录与一键部署（VPS）
+## 8. 一键登录与一键部署（VPS）
 
 新增脚本：
 

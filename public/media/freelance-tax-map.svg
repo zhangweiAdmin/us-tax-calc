@@ -1,0 +1,60 @@
+<svg width="1800" height="300" viewBox="0 0 1800 300" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Freelance tax planning adaptive banner</title>
+  <desc id="desc">Adaptive freelance tax banner with reserve trend, calendar cards, and task checklist blocks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1800" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFE6D1"/>
+      <stop offset="1" stop-color="#DCEBFF"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFCF6" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1800" height="300" fill="url(#bg)"/>
+  <circle cx="142" cy="62" r="74" fill="#F9CCAA" fill-opacity="0.42"/>
+  <circle cx="1660" cy="238" r="88" fill="#A5C8F3" fill-opacity="0.35"/>
+
+  <rect x="24" y="24" width="560" height="252" rx="18" fill="url(#glass)" stroke="#D9D0C2"/>
+  <rect x="54" y="48" width="176" height="14" rx="7" fill="#E4EEFC"/>
+  <rect x="54" y="74" width="500" height="9" rx="4.5" fill="#EEE5D8"/>
+  <rect x="54" y="91" width="456" height="9" rx="4.5" fill="#EEE5D8"/>
+  <rect x="54" y="112" width="500" height="140" rx="12" fill="#F8F3EA" stroke="#E6DECF"/>
+
+  <path d="M74 228L144 186L216 198L298 150L390 172L480 128L552 146" stroke="#CB4F2F" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#0E5EA8" fill-opacity="0.22">
+    <circle cx="144" cy="186" r="6"/>
+    <circle cx="216" cy="198" r="6"/>
+    <circle cx="298" cy="150" r="6"/>
+    <circle cx="390" cy="172" r="6"/>
+    <circle cx="480" cy="128" r="6"/>
+    <circle cx="552" cy="146" r="6"/>
+  </g>
+
+  <rect x="614" y="24" width="560" height="252" rx="18" fill="url(#glass)" stroke="#D9D0C2"/>
+  <rect x="644" y="48" width="166" height="14" rx="7" fill="#E8F1FF"/>
+  <g fill="#FCF7EE" stroke="#E7DDCE">
+    <rect x="644" y="74" width="160" height="178" rx="12"/>
+    <rect x="829" y="74" width="160" height="178" rx="12"/>
+    <rect x="1014" y="74" width="130" height="178" rx="12"/>
+  </g>
+  <g stroke="#1F7B4D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M672 172L696 194L744 132"/>
+    <path d="M857 172L881 194L929 132"/>
+    <path d="M1042 172L1066 194L1114 132"/>
+  </g>
+
+  <rect x="1204" y="24" width="572" height="252" rx="18" fill="url(#glass)" stroke="#D9D0C2"/>
+  <rect x="1234" y="48" width="182" height="14" rx="7" fill="#FDE7DA"/>
+  <rect x="1234" y="74" width="512" height="10" rx="5" fill="#F0E8DC"/>
+
+  <circle cx="1316" cy="170" r="34" fill="#E7F0FF" stroke="#CBDBF4"/>
+  <circle cx="1468" cy="152" r="30" fill="#EEF7EE" stroke="#CCE2CC"/>
+  <circle cx="1622" cy="182" r="37" fill="#FFF0E3" stroke="#EAD5C5"/>
+
+  <path d="M1350 168H1432" stroke="#C6D1E1" stroke-width="4"/>
+  <path d="M1498 158H1584" stroke="#C6D1E1" stroke-width="4"/>
+
+  <rect x="1234" y="230" width="512" height="10" rx="5" fill="#F0E8DC"/>
+</svg>

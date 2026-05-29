@@ -39,7 +39,7 @@
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-initial-tab="freelance">
+  <body data-initial-tab="staking">
     <div class="background-glow"></div>
     <header class="site-header">
       <div class="brand-wrap">
@@ -88,133 +88,130 @@
       </nav>
       <figure class="media-spot">
         <img
-          src="/media/freelance-tax-map.svg"
-          alt="Freelance tax planning dashboard illustration with calendar and reserve trend."
+          src="/media/staking-network.svg"
+          alt="Multi-chain staking network illustration with allocation map and yield trajectory."
           loading="lazy"
           decoding="async"
         />
-        <figcaption>Visual note: monthly reserve habits usually matter more than one-time filing effort.</figcaption>
+        <figcaption>Visual note: portfolio weighting and validator quality can move outcomes more than headline APY.</figcaption>
       </figure>
 
       <section class="guide-card">
-        <h3>Freelance Tax Planning, Built For Real Cash Flow</h3>
+        <h3>Model Staking Outcomes With Conservative Assumptions</h3>
         <p>
-          This page is intentionally focused on one job: helping freelancers estimate federal tax, self-employment tax,
-          and state income tax from business inputs you can gather in a few minutes. Instead of mixing three calculators
-          on one screen, we keep this route dedicated to freelance planning so assumptions stay clear and decisions stay
-          fast.
+          This route is dedicated to multi-chain staking analysis. It separates allocation logic from freelance tax or
+          mortgage topics so you can evaluate APY assumptions, compounding frequency, and chain weights with fewer
+          distractions.
         </p>
         <p>
-          If you need mortgage or staking planning, use the dedicated pages in the top navigation. Each route has its
-          own framework, examples, and FAQ so the content is easier to validate and maintain.
+          The annual gain output is a reward-side model. It does not include token price volatility, slashing events,
+          or custody failures, so treat it as scenario planning input rather than guaranteed return.
         </p>
       </section>
 
       <div class="grid">
-        <form id="freelanceForm" class="card form-card">
-          <h2>Freelance Tax Calculator</h2>
-          <p class="card-note">Estimated federal income tax + self-employment tax + state income tax.</p>
+        <form id="stakingForm" class="card form-card">
+          <h2>Multi-Chain Staking Calculator</h2>
+          <p class="card-note">Allocate principal across chains and estimate annual compounded yield.</p>
           <div class="form-grid">
             <div class="form-row form-row-2">
               <div class="field">
-                <label for="stateCode">State</label>
-                <select id="stateCode" name="stateCode" required></select>
+                <label for="principal">Principal (USD)</label>
+                <input id="principal" name="principal" type="number" min="0" step="100" value="50000" required />
               </div>
               <div class="field">
-                <label for="filingStatus">Filing Status</label>
-                <select id="filingStatus" name="filingStatus" required>
-                  <option value="single">Single</option>
-                  <option value="married_filing_jointly">Married Filing Jointly</option>
-                  <option value="head_of_household">Head of Household</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="grossIncome">Annual Gross Freelance Income (USD)</label>
-              <input id="grossIncome" name="grossIncome" type="number" min="0" step="100" value="120000" required />
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="businessExpenses">Business Expenses (USD)</label>
+                <label for="compoundingPerYear">Compounding Frequency (times / year)</label>
                 <input
-                  id="businessExpenses"
-                  name="businessExpenses"
+                  id="compoundingPerYear"
+                  name="compoundingPerYear"
                   type="number"
-                  min="0"
-                  step="100"
-                  value="25000"
+                  min="1"
+                  step="1"
+                  value="12"
                   required
                 />
               </div>
-              <div class="field">
-                <label for="otherDeductions">Other Deductions (USD)</label>
-                <input id="otherDeductions" name="otherDeductions" type="number" min="0" step="100" value="0" required />
+            </div>
+
+            <div class="chain-grid">
+              <p class="chain-heading">Chain Allocation</p>
+              <div class="chain-row head"><span>Chain</span><span>APY (%)</span><span>Allocation (%)</span></div>
+              <div class="chain-row">
+                <input name="chainName1" value="Ethereum" />
+                <input name="chainApy1" type="number" min="0" step="0.01" value="4.8" />
+                <input name="chainAllocation1" type="number" min="0" max="100" step="0.1" value="50" />
+              </div>
+              <div class="chain-row">
+                <input name="chainName2" value="Solana" />
+                <input name="chainApy2" type="number" min="0" step="0.01" value="7.2" />
+                <input name="chainAllocation2" type="number" min="0" max="100" step="0.1" value="30" />
+              </div>
+              <div class="chain-row">
+                <input name="chainName3" value="Cosmos" />
+                <input name="chainApy3" type="number" min="0" step="0.01" value="12" />
+                <input name="chainAllocation3" type="number" min="0" max="100" step="0.1" value="20" />
               </div>
             </div>
           </div>
 
-          <button type="submit" class="primary-btn">Calculate Taxes</button>
+          <button type="submit" class="primary-btn">Estimate Staking Yield</button>
         </form>
 
-        <article class="card result-card" id="freelanceResult">
-          <h2>Estimated Result</h2>
-          <p class="placeholder">Run the calculator to view tax breakdown.</p>
+        <article class="card result-card" id="stakingResult">
+          <h2>Yield Projection</h2>
+          <p class="placeholder">Calculate to see portfolio-level APY and chain breakdown.</p>
         </article>
       </div>
 
       <section class="guide-card">
-        <h3>How This Estimate Works</h3>
-        <p>
-          We start from gross freelance income, subtract business expenses, then estimate self-employment tax and
-          federal/state income tax based on your filing status and selected state. The output is directional planning
-          data, not a filed return.
-        </p>
-        <h3>Use It In A Repeatable Routine</h3>
+        <h3>What To Check Before Acting On The Number</h3>
         <ul>
-          <li>Update income and expense numbers at least once per month.</li>
-          <li>Compare quarterly estimate against your tax reserve account balance.</li>
-          <li>Re-run after major income changes, not only at deadline week.</li>
+          <li>Validator commission and uptime history.</li>
+          <li>Unbonding periods and liquidity constraints.</li>
+          <li>Tax recordkeeping method for reward events.</li>
         </ul>
+        <p>
+          If your allocation does not total 100%, the model normalizes weights. That keeps comparisons consistent, but
+          you should still document your intended policy before deploying capital.
+        </p>
       </section>
 
       <section class="faq-card">
-        <h3>Freelance Tax FAQ</h3>
+        <h3>Crypto Staking FAQ</h3>
         <dl>
-          <dt>Should I include non-freelance W-2 income in this tool?</dt>
+          <dt>What if my allocations do not add up to 100%?</dt>
           <dd>
-            No. This page is meant for freelance business income planning. If you also have W-2 wages, use this as a
-            partial estimate and combine it with a full tax projection before filing.
+            The calculator normalizes the weights internally. That means each chain still receives a proportional share
+            of capital even when your raw percentages are under or over 100.
           </dd>
-          <dt>Why does self-employment tax look high?</dt>
+          <dt>Is APY treated as guaranteed?</dt>
           <dd>
-            Self-employment tax covers both the employee and employer portions of Social Security and Medicare, so it
-            is usually higher than first-time freelancers expect.
+            No. APY is an input assumption. Real outcomes can deviate because validator performance, protocol policy,
+            and network conditions change over time.
           </dd>
-          <dt>Can I rely on this for quarterly estimates?</dt>
+          <dt>Does this include token price movement?</dt>
           <dd>
-            Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account
-            for credits, prior-year safe harbor rules, and any other household income.
+            No. Results are reward-side estimates in token terms. USD performance can be very different depending on
+            market price changes.
           </dd>
-          <dt>How often are tax assumptions refreshed?</dt>
+          <dt>How should I choose compounding frequency?</dt>
           <dd>
-            The backend refreshes source tax tables regularly and stores update metadata. If live fetching fails, the
-            app falls back to the last successful dataset to avoid downtime.
+            Match it to your likely claim-and-restake behavior. Using a very high compounding frequency can overstate
+            outcomes if you cannot execute that frequently in practice.
           </dd>
-          <dt>Which filing statuses are supported?</dt>
+          <dt>Can this model slashing risk?</dt>
           <dd>
-            Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan
-            to keep bracket assumptions aligned.
+            Not directly. Slashing is a downside risk outside this formula, so apply a conservative haircut to APY
+            assumptions when planning higher-risk validator sets.
           </dd>
         </dl>
       </section>
       <section class="footnote-card">
         <h3>Compliance Notes</h3>
         <ul>
-          <li>This site provides estimates only and is not legal or tax advice.</li>
-          <li>Tax rates are refreshed daily by server-side scraping from public tax data pages.</li>
-          <li>Always verify with IRS/state authorities or a licensed CPA before filing.</li>
+          <li>This model provides planning estimates only.</li>
+          <li>Always evaluate protocol risk and custody risk separately from APY math.</li>
+          <li>For U.S. reporting decisions, validate with IRS guidance and qualified advice.</li>
         </ul>
       </section>
     </main>

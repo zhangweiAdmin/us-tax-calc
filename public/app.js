@@ -79,99 +79,6 @@ const FALLBACK_STATES = [
   ["DC", "District of Columbia"]
 ];
 
-let adsenseScriptPromise = null;
-
-function isValidAdSenseClientId(value) {
-  return /^ca-pub-\d{16}$/.test(String(value || "").trim());
-}
-
-function isValidAdSenseSlot(value) {
-  return /^\d{6,}$/.test(String(value || "").trim());
-}
-
-async function loadPublicConfig() {
-  const response = await fetch("/api/public-config");
-  if (!response.ok) throw new Error("Failed to load public config");
-  return response.json();
-}
-
-function ensureAdSenseScript(clientId) {
-  if (adsenseScriptPromise) return adsenseScriptPromise;
-
-  adsenseScriptPromise = new Promise((resolve, reject) => {
-    const existingScript = document.querySelector('script[data-ad-loader="adsense"]');
-    if (existingScript) {
-      resolve();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.dataset.adLoader = "adsense";
-    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
-      clientId
-    )}`;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load AdSense script"));
-    document.head.appendChild(script);
-  });
-
-  return adsenseScriptPromise;
-}
-
-function mountAdUnit({ slotSelector, clientId, slot }) {
-  const container = $(slotSelector);
-  if (!container) return;
-
-  container.innerHTML = "";
-  const ad = document.createElement("ins");
-  ad.className = "adsbygoogle";
-  ad.style.display = "block";
-  ad.setAttribute("data-ad-client", clientId);
-  ad.setAttribute("data-ad-slot", slot);
-  ad.setAttribute("data-ad-format", "auto");
-  ad.setAttribute("data-full-width-responsive", "true");
-  container.appendChild(ad);
-
-  window.adsbygoogle = window.adsbygoogle || [];
-  window.adsbygoogle.push({});
-}
-
-async function initAdSense() {
-  try {
-    const config = await loadPublicConfig();
-    const adsense = config?.adsense || {};
-    const clientId = String(adsense.clientId || "").trim();
-    const topSlot = String(adsense.slots?.top || "").trim();
-    const bottomSlot = String(adsense.slots?.bottom || "").trim();
-
-    if (!isValidAdSenseClientId(clientId)) return;
-
-    const units = [
-      { shellSelector: "#adTop", slotSelector: "#adTop .ad-slot", slot: topSlot },
-      { shellSelector: "#adBottom", slotSelector: "#adBottom .ad-slot", slot: bottomSlot }
-    ].filter((unit) => isValidAdSenseSlot(unit.slot));
-
-    if (units.length === 0) return;
-
-    await ensureAdSenseScript(clientId);
-
-    for (const unit of units) {
-      const shell = $(unit.shellSelector);
-      if (!shell) continue;
-      shell.hidden = false;
-      mountAdUnit({
-        slotSelector: unit.slotSelector,
-        clientId,
-        slot: unit.slot
-      });
-    }
-  } catch (error) {
-    console.warn("[adsense] init skipped:", error.message);
-  }
-}
-
 function setMeta(meta) {
   const status = meta?.sourceStatus || {};
   const statusText = `Federal: ${status.federal || "unknown"} | States: ${status.states || "unknown"}`;
@@ -190,23 +97,114 @@ function setMeta(meta) {
   }
 }
 
-function bindTabs() {
-  const buttons = $$(".tab-btn");
+function normalizePathname(pathname) {
+  const raw = String(pathname || "/").trim() || "/";
+  if (raw === "/") return "/";
+  return raw.replace(/\/+$/, "") || "/";
+}
+
+function linkPathname(link) {
+  const href = link.getAttribute("href");
+  if (!href || !href.startsWith("/")) return null;
+  try {
+    const url = new URL(href, window.location.origin);
+    return normalizePathname(url.pathname);
+  } catch {
+    return null;
+  }
+}
+
+function isPathMatch(currentPath, candidatePath) {
+  if (!candidatePath) return false;
+  if (candidatePath === currentPath) return true;
+  if (candidatePath === "/articles" && currentPath.startsWith("/articles/")) return true;
+  return false;
+}
+
+function activateTab(tab) {
+  const targetTab = ["freelance", "mortgage", "staking"].includes(tab)
+    ? tab
+    : "freelance";
+  const navLinks = $$(".site-nav-link");
   const panels = $$(".tab-panel");
+  const currentPath = normalizePathname(window.location.pathname);
 
-  for (const button of buttons) {
-    button.addEventListener("click", () => {
-      const tab = button.dataset.tab;
+  for (const link of navLinks) {
+    const fallbackPath = linkPathname(link);
+    const isActive = link.dataset.tab
+      ? link.dataset.tab === targetTab
+      : isPathMatch(currentPath, fallbackPath);
+    link.classList.toggle("is-active", isActive);
+    if (isActive) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  }
 
-      for (const btn of buttons) {
-        btn.classList.toggle("is-active", btn === button);
-      }
+  for (const panel of panels) {
+    panel.classList.toggle("is-active", panel.id === `tab-${targetTab}`);
+  }
+}
 
-      for (const panel of panels) {
-        panel.classList.toggle("is-active", panel.id === `tab-${tab}`);
+function setSubmitLoading(formId, loading, loadingLabel) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  const button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+
+  if (!button.dataset.defaultLabel) {
+    button.dataset.defaultLabel = button.textContent || "";
+  }
+
+  button.disabled = loading;
+  button.setAttribute("aria-busy", loading ? "true" : "false");
+  button.textContent = loading ? loadingLabel : button.dataset.defaultLabel;
+}
+
+function renderLoading(cardId, title, message) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+
+  card.innerHTML = `
+    <h2>${title}</h2>
+    <div class="loading-wrap" role="status" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <p class="loading-text">${message}</p>
+    </div>
+  `;
+}
+
+function tabFromPath(pathname) {
+  const normalized = normalizePathname(pathname);
+  if (normalized === "/mortgage-refinance-calculator") return "mortgage";
+  if (normalized === "/crypto-staking-calculator") return "staking";
+  return "freelance";
+}
+
+function bindTabNavigation() {
+  const links = $$(".site-nav-link[data-tab][href]");
+
+  for (const link of links) {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+      if (!href.startsWith("/")) return;
+
+      event.preventDefault();
+      const tab = link.dataset.tab || tabFromPath(href);
+      activateTab(tab);
+
+      const currentPath = window.location.pathname + window.location.search + window.location.hash;
+      if (href !== currentPath) {
+        window.history.pushState({ tab }, "", href);
       }
     });
   }
+
+  window.addEventListener("popstate", () => {
+    activateTab(tabFromPath(window.location.pathname));
+  });
 }
 
 function renderFreelanceResult(result) {
@@ -402,6 +400,7 @@ async function loadMeta() {
 
 async function loadStates() {
   const select = $("#stateCode");
+  if (!select) return;
   const previous = String(select.value || "CA").toUpperCase();
 
   const applyStates = (rows) => {
@@ -441,73 +440,98 @@ async function loadStates() {
 }
 
 function bindForms() {
-  $("#freelanceForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
+  const freelanceForm = $("#freelanceForm");
+  if (freelanceForm) {
+    freelanceForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-    const payload = {
-      stateCode: $("#stateCode").value,
-      filingStatus: $("#filingStatus").value,
-      grossIncome: asNumber($("#grossIncome").value),
-      businessExpenses: asNumber($("#businessExpenses").value),
-      otherDeductions: asNumber($("#otherDeductions").value)
-    };
+      const payload = {
+        stateCode: $("#stateCode").value,
+        filingStatus: $("#filingStatus").value,
+        grossIncome: asNumber($("#grossIncome").value),
+        businessExpenses: asNumber($("#businessExpenses").value),
+        otherDeductions: asNumber($("#otherDeductions").value)
+      };
 
-    try {
-      const result = await postJson("/api/calculate/freelance", payload);
-      renderFreelanceResult(result);
-    } catch (error) {
-      $("#freelanceResult").innerHTML = `<h2>Estimated Result</h2><p class="placeholder">${error.message}</p>`;
-    }
-  });
+      renderLoading("freelanceResult", "Estimated Result", "Running tax estimate...");
+      setSubmitLoading("freelanceForm", true, "Calculating...");
 
-  $("#mortgageForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
+      try {
+        const result = await postJson("/api/calculate/freelance", payload);
+        renderFreelanceResult(result);
+      } catch (error) {
+        $("#freelanceResult").innerHTML = `<h2>Estimated Result</h2><p class="placeholder">${error.message}</p>`;
+      } finally {
+        setSubmitLoading("freelanceForm", false, "");
+      }
+    });
+  }
 
-    const payload = {
-      currentBalance: asNumber($("#currentBalance").value),
-      currentRate: asNumber($("#currentRate").value),
-      currentTermYears: asNumber($("#currentTermYears").value),
-      newRate: asNumber($("#newRate").value),
-      newTermYears: asNumber($("#newTermYears").value),
-      closingCosts: asNumber($("#closingCosts").value)
-    };
+  const mortgageForm = $("#mortgageForm");
+  if (mortgageForm) {
+    mortgageForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-    try {
-      const result = await postJson("/api/calculate/refinance", payload);
-      renderMortgageResult(result);
-    } catch (error) {
-      $("#mortgageResult").innerHTML = `<h2>Refinance Projection</h2><p class="placeholder">${error.message}</p>`;
-    }
-  });
+      const payload = {
+        currentBalance: asNumber($("#currentBalance").value),
+        currentRate: asNumber($("#currentRate").value),
+        currentTermYears: asNumber($("#currentTermYears").value),
+        newRate: asNumber($("#newRate").value),
+        newTermYears: asNumber($("#newTermYears").value),
+        closingCosts: asNumber($("#closingCosts").value)
+      };
 
-  $("#stakingForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
+      renderLoading("mortgageResult", "Refinance Projection", "Comparing refinance scenarios...");
+      setSubmitLoading("mortgageForm", true, "Calculating...");
 
-    const chains = [1, 2, 3].map((idx) => ({
-      name: $(`[name="chainName${idx}"]`).value,
-      apy: asNumber($(`[name="chainApy${idx}"]`).value),
-      allocation: asNumber($(`[name="chainAllocation${idx}"]`).value)
-    }));
+      try {
+        const result = await postJson("/api/calculate/refinance", payload);
+        renderMortgageResult(result);
+      } catch (error) {
+        $("#mortgageResult").innerHTML = `<h2>Refinance Projection</h2><p class="placeholder">${error.message}</p>`;
+      } finally {
+        setSubmitLoading("mortgageForm", false, "");
+      }
+    });
+  }
 
-    const allocationSum = chains.reduce((sum, chain) => sum + chain.allocation, 0);
+  const stakingForm = $("#stakingForm");
+  if (stakingForm) {
+    stakingForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-    const payload = {
-      principal: asNumber($("#principal").value),
-      compoundingPerYear: asNumber($("#compoundingPerYear").value),
-      chains
-    };
+      const chains = [1, 2, 3].map((idx) => ({
+        name: $(`[name="chainName${idx}"]`).value,
+        apy: asNumber($(`[name="chainApy${idx}"]`).value),
+        allocation: asNumber($(`[name="chainAllocation${idx}"]`).value)
+      }));
 
-    try {
-      const result = await postJson("/api/calculate/staking", payload);
-      renderStakingResult(result, allocationSum);
-    } catch (error) {
-      $("#stakingResult").innerHTML = `<h2>Yield Projection</h2><p class="placeholder">${error.message}</p>`;
-    }
-  });
+      const allocationSum = chains.reduce((sum, chain) => sum + chain.allocation, 0);
+
+      const payload = {
+        principal: asNumber($("#principal").value),
+        compoundingPerYear: asNumber($("#compoundingPerYear").value),
+        chains
+      };
+
+      renderLoading("stakingResult", "Yield Projection", "Modeling multi-chain yield...");
+      setSubmitLoading("stakingForm", true, "Calculating...");
+
+      try {
+        const result = await postJson("/api/calculate/staking", payload);
+        renderStakingResult(result, allocationSum);
+      } catch (error) {
+        $("#stakingResult").innerHTML = `<h2>Yield Projection</h2><p class="placeholder">${error.message}</p>`;
+      } finally {
+        setSubmitLoading("stakingForm", false, "");
+      }
+    });
+  }
 }
 
 async function init() {
-  bindTabs();
+  activateTab(tabFromPath(window.location.pathname || document.body.dataset.initialTab));
+  bindTabNavigation();
   bindForms();
 
   await loadStates();
@@ -519,7 +543,6 @@ async function init() {
     $("#metaUpdatedAt").textContent = error.message;
   }
 
-  await initAdSense();
 }
 
 init();
