@@ -1073,3 +1073,15 @@ Format:
 - Action: Completed code release sync to remote git repository.
 - Result: Committed as `79410c8 feat: add domain email forwarding automation and update author contact` and pushed `master` to `origin` successfully.
 - Next: Execute email-forwarding setup command after API key is provided, then send a test email to confirm forwarding to QQ inbox.
+
+## 2026-05-30 00:18:00 CST
+- Step: 177
+- Action: Added DNS forwarding records in the Juyu DNS console for `zlxjy.com`.
+- Result: Created `MX @ mx1.improvmx.com` priority `10`, `MX @ mx2.improvmx.com` priority `20`, and `TXT @ v=spf1 include:spf.improvmx.com ~all`; existing Google verification TXT and site A records were kept.
+- Next: Confirm public authoritative DNS lookup returns the new MX/TXT values, then sync the log to GitHub.
+
+## 2026-05-30 00:18:00 CST
+- Step: 178
+- Action: Verified the updated authoritative DNS zone.
+- Result: Direct queries to `ns1.julydns.com` now return both ImprovMX MX records and the SPF TXT record for `zlxjy.com`.
+- Next: Commit and push the updated execution log.
