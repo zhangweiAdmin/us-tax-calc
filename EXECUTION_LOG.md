@@ -1085,3 +1085,9 @@ Format:
 - Action: Verified the updated authoritative DNS zone.
 - Result: Direct queries to `ns1.julydns.com` now return both ImprovMX MX records and the SPF TXT record for `zlxjy.com`.
 - Next: Commit and push the updated execution log.
+
+## 2026-05-30 10:25:21 CST
+- Step: 179
+- Action: Activated ImprovMX forwarding for `zlxjy.com`.
+- Result: Using the provided API key, created the domain in ImprovMX and added alias `coco@zlxjy.com -> 785432128@qq.com`; authoritative DNS still returns the expected MX/SPF records, while a local resolver check lagged behind and reported no MX yet.
+- Next: Re-run verification after DNS propagation and send a test message to confirm delivery to QQ.
