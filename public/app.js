@@ -260,6 +260,145 @@ function renderFreelanceResult(result) {
   `;
 }
 
+function buildInstallmentDueDates(taxYear) {
+  const raw = [
+    new Date(Date.UTC(taxYear, 3, 15, 12, 0, 0)),
+    new Date(Date.UTC(taxYear, 5, 15, 12, 0, 0)),
+    new Date(Date.UTC(taxYear, 8, 15, 12, 0, 0)),
+    new Date(Date.UTC(taxYear + 1, 0, 15, 12, 0, 0))
+  ];
+
+  return raw.map((date, idx) => {
+    const shifted = new Date(date.getTime());
+    while (shifted.getUTCDay() === 0 || shifted.getUTCDay() === 6) {
+      shifted.setUTCDate(shifted.getUTCDate() + 1);
+    }
+    return {
+      quarter: idx + 1,
+      dueDate: shifted.toISOString().slice(0, 10),
+      date: shifted
+    };
+  });
+}
+
+function deriveElapsedInstallmentsForDate(taxYear, asOfDate) {
+  const dueDates = buildInstallmentDueDates(taxYear);
+  const asOf = new Date(`${asOfDate}T12:00:00Z`);
+  if (!Number.isFinite(asOf.getTime())) return 0;
+  return dueDates.reduce((count, row) => (asOf >= row.date ? count + 1 : count), 0);
+}
+
+function applySafeHarborDefaults() {
+  const taxYearInput = $("#safeHarborTaxYear");
+  const asOfDateInput = $("#safeHarborAsOfDate");
+  const installmentsInput = $("#safeHarborInstallmentsElapsed");
+  if (!taxYearInput || !asOfDateInput || !installmentsInput) return;
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const todayIso = `${yyyy}-${mm}-${dd}`;
+
+  if (!taxYearInput.value) {
+    taxYearInput.value = String(yyyy);
+  }
+  if (!asOfDateInput.value) {
+    asOfDateInput.value = todayIso;
+  }
+
+  const elapsed = deriveElapsedInstallmentsForDate(asNumber(taxYearInput.value), asOfDateInput.value);
+  installmentsInput.value = String(Math.max(0, Math.min(4, elapsed)));
+
+  if (!taxYearInput.dataset.boundAutoInstallments) {
+    const syncElapsedInstallments = () => {
+      const elapsedLocal = deriveElapsedInstallmentsForDate(asNumber(taxYearInput.value), asOfDateInput.value);
+      installmentsInput.value = String(Math.max(0, Math.min(4, elapsedLocal)));
+    };
+    taxYearInput.addEventListener("change", syncElapsedInstallments);
+    asOfDateInput.addEventListener("change", syncElapsedInstallments);
+    taxYearInput.dataset.boundAutoInstallments = "1";
+  }
+}
+
+function syncSafeHarborWithFreelanceEstimate(freelancePayload, freelanceResult) {
+  const totalTax = freelanceResult?.breakdown?.totalEstimatedTax;
+  if (!Number.isFinite(Number(totalTax))) return;
+
+  const currentTaxInput = $("#currentYearTotalTax");
+  const safeHarborStatus = $("#safeHarborFilingStatus");
+  if (currentTaxInput) {
+    currentTaxInput.value = String(Math.round(Number(totalTax)));
+  }
+  if (safeHarborStatus && freelancePayload?.filingStatus) {
+    safeHarborStatus.value = String(freelancePayload.filingStatus);
+  }
+}
+
+function renderSafeHarborResult(result) {
+  const el = $("#safeHarborResult");
+  const b = result.breakdown || {};
+  const scheduleRows = (result.details?.dueSchedule || [])
+    .map((row) => `<li>Q${row.quarter}: ${row.dueDate} (${row.status})</li>`)
+    .join("");
+
+  const assumptions = (result.assumptions || [])
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  el.innerHTML = `
+    <h2>Safe Harbor Projection</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <p class="kpi-label">Required Annual Safe Harbor</p>
+        <p class="kpi-value">${formatCurrency(b.requiredAnnualPayment)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Target Rule Used</p>
+        <p class="kpi-value">${b.targetRule || "N/A"}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Paid To Date</p>
+        <p class="kpi-value">${formatCurrency(b.paidToDate)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Remaining Safe Harbor Amount</p>
+        <p class="kpi-value ${b.remainingSafeHarborAmount > 0 ? "" : "good"}">${formatCurrency(
+          b.remainingSafeHarborAmount
+        )}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Suggested Per Remaining Installment</p>
+        <p class="kpi-value">${formatCurrency(b.suggestedPerRemainingInstallment)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Projected Safe Harbor Gap</p>
+        <p class="kpi-value ${b.projectedSafeHarborGap > 0 ? "" : "good"}">${formatCurrency(
+          b.projectedSafeHarborGap
+        )}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Projected Year-End Tax Gap</p>
+        <p class="kpi-value ${b.projectedTaxGap > 0 ? "" : "good"}">${formatCurrency(
+          b.projectedTaxGap
+        )}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Installments Remaining</p>
+        <p class="kpi-value">${b.installmentsRemaining ?? 0}</p>
+      </div>
+    </div>
+    <p class="result-note">
+      <strong>As-of date:</strong> ${result.details?.asOfDate || "N/A"} |
+      <strong>AGI threshold used:</strong> ${formatCurrency(b.agiThreshold)}
+    </p>
+    <h3 class="result-subtitle">Installment Due Schedule</h3>
+    <ul class="result-list">${scheduleRows}</ul>
+    <h3 class="result-subtitle">Assumptions</h3>
+    <ul class="result-list">${assumptions}</ul>
+  `;
+}
+
 function renderMortgageResult(result) {
   const el = $("#mortgageResult");
   const b = result.breakdown;
@@ -459,6 +598,7 @@ function bindForms() {
       try {
         const result = await postJson("/api/calculate/freelance", payload);
         renderFreelanceResult(result);
+        syncSafeHarborWithFreelanceEstimate(payload, result);
       } catch (error) {
         $("#freelanceResult").innerHTML = `<h2>Estimated Result</h2><p class="placeholder">${error.message}</p>`;
       } finally {
@@ -527,11 +667,45 @@ function bindForms() {
       }
     });
   }
+
+  const safeHarborForm = $("#safeHarborForm");
+  if (safeHarborForm) {
+    safeHarborForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const payload = {
+        filingStatus: $("#safeHarborFilingStatus").value,
+        taxYear: asNumber($("#safeHarborTaxYear").value),
+        currentYearTotalTax: asNumber($("#currentYearTotalTax").value),
+        priorYearTotalTax: asNumber($("#priorYearTotalTax").value),
+        priorYearAgi: asNumber($("#priorYearAgi").value),
+        withholdingYtd: asNumber($("#withholdingYtd").value),
+        estimatedPaymentsYtd: asNumber($("#estimatedPaymentsYtd").value),
+        expectedWithholdingRemaining: asNumber($("#expectedWithholdingRemaining").value),
+        expectedEstimatedPaymentsRemaining: asNumber($("#expectedEstimatedPaymentsRemaining").value),
+        installmentsElapsed: asNumber($("#safeHarborInstallmentsElapsed").value),
+        asOfDate: $("#safeHarborAsOfDate").value || undefined
+      };
+
+      renderLoading("safeHarborResult", "Safe Harbor Projection", "Calculating safe-harbor target...");
+      setSubmitLoading("safeHarborForm", true, "Calculating...");
+
+      try {
+        const result = await postJson("/api/calculate/safe-harbor", payload);
+        renderSafeHarborResult(result);
+      } catch (error) {
+        $("#safeHarborResult").innerHTML = `<h2>Safe Harbor Projection</h2><p class="placeholder">${error.message}</p>`;
+      } finally {
+        setSubmitLoading("safeHarborForm", false, "");
+      }
+    });
+  }
 }
 
 async function init() {
   activateTab(tabFromPath(window.location.pathname || document.body.dataset.initialTab));
   bindTabNavigation();
+  applySafeHarborDefaults();
   bindForms();
 
   await loadStates();

@@ -448,6 +448,12 @@ body.nav-drawer-open {
   flex-direction: column;
 }
 
+.field-help {
+  margin: 6px 0 0;
+  color: #516079;
+  font-size: 0.82rem;
+}
+
 .field label {
   margin-top: 0;
 }
@@ -584,6 +590,15 @@ select:focus {
   padding-left: 18px;
   color: #3a475b;
   line-height: 1.55;
+}
+
+.result-subtitle {
+  margin: 14px 0 0;
+  font-size: 1rem;
+}
+
+.safe-harbor-grid .kpi-value {
+  overflow-wrap: anywhere;
 }
 
 .chain-grid {

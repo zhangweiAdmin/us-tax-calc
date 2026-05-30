@@ -1097,3 +1097,33 @@ Format:
 - Action: Sent a Gmail test message for forwarding verification.
 - Result: Using the desktop Chrome Gmail session, sent a test email to `coco@zlxjy.com` with subject `ImprovMX forwarding test 1780109656`; Gmail reported the message as sent.
 - Next: Check `785432128@qq.com` for delivery and confirm the forwarded message arrived.
+
+## 2026-05-30 21:31:43 CST
+- Step: 181
+- Action: Started expansion work for the Quarterly Estimated Tax Safe Harbor calculator.
+- Result: Reviewed current frontend (`public/index.html`, `public/app.js`) and backend (`server/index.js`, `server/lib/taxMath.js`) integration paths, then finalized an implementation plan: add Safe Harbor API, add a dedicated form/result card on the freelance page, and connect auto-fill from freelance tax estimate output.
+- Next: Implement backend Safe Harbor calculation + route, then wire the frontend form and render logic.
+
+## 2026-05-30 21:39:12 CST
+- Step: 182
+- Action: Implemented backend Safe Harbor calculation and API endpoint.
+- Result: Added `calculateQuarterlySafeHarbor` in `server/lib/taxMath.js` with 90% current-year vs 100%/110% prior-year target logic, YTD payment tracking, remaining installment suggestion, and due-schedule output; exposed new route `POST /api/calculate/safe-harbor` in `server/index.js`.
+- Next: Add frontend Safe Harbor form/result module and connect it with freelance estimate output for auto-fill.
+
+## 2026-05-30 21:43:52 CST
+- Step: 183
+- Action: Completed frontend integration for the Safe Harbor calculator module.
+- Result: Added a dedicated Safe Harbor form + result card to `public/index.html`, wired new submit/render/default/auto-fill logic in `public/app.js`, added supporting styles in `public/styles.css`, and updated homepage FAQ + README/API docs to include the Safe Harbor feature and endpoint.
+- Next: Run local validation (syntax + API smoke + page rendering), then deploy to production if checks pass.
+
+## 2026-05-30 22:02:59 CST
+- Step: 184
+- Action: Ran local and remote-safe smoke validation for the Safe Harbor release.
+- Result: Passed JS syntax checks (`server/index.js`, `server/lib/taxMath.js`, `public/app.js`); local API smoke confirmed `/api/calculate/safe-harbor` returns expected values (required annual payment, rule, next installment), and existing freelance calculation endpoint remained healthy.
+- Next: Deploy the new build to production and confirm live health and Safe Harbor endpoint responses.
+
+## 2026-05-30 22:02:59 CST
+- Step: 185
+- Action: Deployed Safe Harbor release to production server.
+- Result: Executed `./scripts/vps-tool.sh deploy` against `97.64.82.143`; rsync + remote restart succeeded, service reported `active`, local service health check on server returned HTTP 200 JSON, and public HTTPS checks passed for both `/api/health` and `/api/calculate/safe-harbor`.
+- Next: Commit and push source updates (`Safe Harbor feature + logs`) to remote GitHub repository.

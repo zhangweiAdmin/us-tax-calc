@@ -16,6 +16,11 @@ function roundCurrency(value) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
+function toInteger(value, fallback) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) ? parsed : fallback;
+}
+
 export function calculateProgressiveTax(taxableIncome, brackets) {
   const income = clampNonNegative(taxableIncome);
   if (!Array.isArray(brackets) || brackets.length === 0) {
@@ -66,6 +71,74 @@ export function calculateProgressiveTax(taxableIncome, brackets) {
 function pickFilingStatus(status) {
   const allowed = ["single", "married_filing_jointly", "head_of_household"];
   return allowed.includes(status) ? status : "single";
+}
+
+function pickSafeHarborFilingStatus(status) {
+  const allowed = [
+    "single",
+    "married_filing_jointly",
+    "married_filing_separately",
+    "head_of_household"
+  ];
+  return allowed.includes(status) ? status : "single";
+}
+
+function toUtcDate(value, fallbackDate = new Date()) {
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split("-").map((item) => Number(item));
+    return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  }
+
+  const fallback =
+    fallbackDate instanceof Date && Number.isFinite(fallbackDate.getTime())
+      ? fallbackDate
+      : new Date();
+  return new Date(
+    Date.UTC(
+      fallback.getUTCFullYear(),
+      fallback.getUTCMonth(),
+      fallback.getUTCDate(),
+      12,
+      0,
+      0
+    )
+  );
+}
+
+function shiftWeekendToNextBusinessDay(date) {
+  const shifted = new Date(date.getTime());
+  while (shifted.getUTCDay() === 0 || shifted.getUTCDay() === 6) {
+    shifted.setUTCDate(shifted.getUTCDate() + 1);
+  }
+  return shifted;
+}
+
+function buildQuarterlyDueDates(taxYear) {
+  const schedule = [
+    { quarter: 1, year: taxYear, month: 3, day: 15 },
+    { quarter: 2, year: taxYear, month: 5, day: 15 },
+    { quarter: 3, year: taxYear, month: 8, day: 15 },
+    { quarter: 4, year: taxYear + 1, month: 0, day: 15 }
+  ];
+
+  return schedule.map((row) => {
+    const dueAt = shiftWeekendToNextBusinessDay(
+      new Date(Date.UTC(row.year, row.month, row.day, 12, 0, 0))
+    );
+    return {
+      quarter: row.quarter,
+      dueAt
+    };
+  });
+}
+
+function deriveElapsedInstallments(asOfDate, dueDates) {
+  return dueDates.reduce((count, row) => (asOfDate >= row.dueAt ? count + 1 : count), 0);
+}
+
+function normalizeInstallmentCount(value, fallback) {
+  if (!Number.isFinite(Number(value))) return fallback;
+  return Math.max(0, Math.min(4, Math.round(Number(value))));
 }
 
 function getStateForFreelanceTax(taxData, stateCode) {
@@ -168,6 +241,102 @@ export function calculateFreelanceTaxes({ taxData, input }) {
       state: stateTaxCalc,
       stateNote,
       stateName: state?.name || stateCode
+    }
+  };
+}
+
+export function calculateQuarterlySafeHarbor(input = {}) {
+  const now = new Date();
+  const taxYear = Math.min(2100, Math.max(2000, toInteger(input.taxYear, now.getFullYear())));
+  const filingStatus = pickSafeHarborFilingStatus(input.filingStatus);
+
+  const currentYearTotalTax = clampNonNegative(
+    input.currentYearTotalTax ??
+      input.currentYearTaxEstimate ??
+      input.projectedCurrentYearTax ??
+      input.estimatedCurrentYearTax
+  );
+  const priorYearTotalTax = clampNonNegative(input.priorYearTotalTax);
+  const priorYearAgi = clampNonNegative(input.priorYearAgi);
+  const withholdingYtd = clampNonNegative(input.withholdingYtd);
+  const estimatedPaymentsYtd = clampNonNegative(input.estimatedPaymentsYtd);
+  const expectedWithholdingRemaining = clampNonNegative(input.expectedWithholdingRemaining);
+  const expectedEstimatedPaymentsRemaining = clampNonNegative(input.expectedEstimatedPaymentsRemaining);
+
+  const asOfDate = toUtcDate(input.asOfDate, now);
+  const dueDates = buildQuarterlyDueDates(taxYear);
+  const elapsedAuto = deriveElapsedInstallments(asOfDate, dueDates);
+  const installmentsElapsed = normalizeInstallmentCount(input.installmentsElapsed, elapsedAuto);
+  const installmentsRemaining = Math.max(0, 4 - installmentsElapsed);
+
+  const agiThreshold = filingStatus === "married_filing_separately" ? 75000 : 150000;
+  const priorYearMultiplier = priorYearAgi > agiThreshold ? 1.1 : 1;
+  const priorYearRuleTarget = priorYearTotalTax * priorYearMultiplier;
+  const currentYearRuleTarget = currentYearTotalTax * 0.9;
+
+  let requiredAnnualPayment = currentYearRuleTarget;
+  let targetRule = "90% of current-year estimated total tax";
+
+  if (priorYearRuleTarget > 0 && priorYearRuleTarget < currentYearRuleTarget) {
+    requiredAnnualPayment = priorYearRuleTarget;
+    targetRule =
+      priorYearMultiplier > 1
+        ? "110% of prior-year total tax (AGI above threshold)"
+        : "100% of prior-year total tax";
+  }
+
+  const paidToDate = withholdingYtd + estimatedPaymentsYtd;
+  const remainingSafeHarborAmount = Math.max(0, requiredAnnualPayment - paidToDate);
+  const nextInstallmentAmount =
+    installmentsRemaining > 0 ? remainingSafeHarborAmount / installmentsRemaining : 0;
+
+  const projectedYearEndPayments =
+    paidToDate + expectedWithholdingRemaining + expectedEstimatedPaymentsRemaining;
+  const projectedSafeHarborGap = Math.max(0, requiredAnnualPayment - projectedYearEndPayments);
+  const projectedTaxGap = Math.max(0, currentYearTotalTax - projectedYearEndPayments);
+
+  return {
+    assumptions: [
+      "Safe harbor generally means paying the smaller of 90% of current-year tax or 100%/110% of prior-year tax.",
+      "Withholding and estimated payments are both credited toward safe-harbor targets.",
+      "Estimate excludes special cases (farmer/fisher rules, annualized installment method, and penalty interest details)."
+    ],
+    input: {
+      taxYear,
+      filingStatus,
+      currentYearTotalTax: roundCurrency(currentYearTotalTax),
+      priorYearTotalTax: roundCurrency(priorYearTotalTax),
+      priorYearAgi: roundCurrency(priorYearAgi),
+      withholdingYtd: roundCurrency(withholdingYtd),
+      estimatedPaymentsYtd: roundCurrency(estimatedPaymentsYtd),
+      expectedWithholdingRemaining: roundCurrency(expectedWithholdingRemaining),
+      expectedEstimatedPaymentsRemaining: roundCurrency(expectedEstimatedPaymentsRemaining),
+      installmentsElapsed,
+      asOfDate: asOfDate.toISOString().slice(0, 10)
+    },
+    breakdown: {
+      currentYearRuleTarget: roundCurrency(currentYearRuleTarget),
+      priorYearRuleTarget: roundCurrency(priorYearRuleTarget),
+      requiredAnnualPayment: roundCurrency(requiredAnnualPayment),
+      targetRule,
+      priorYearMultiplier,
+      agiThreshold,
+      paidToDate: roundCurrency(paidToDate),
+      remainingSafeHarborAmount: roundCurrency(remainingSafeHarborAmount),
+      installmentsElapsed,
+      installmentsRemaining,
+      suggestedPerRemainingInstallment: roundCurrency(nextInstallmentAmount),
+      projectedYearEndPayments: roundCurrency(projectedYearEndPayments),
+      projectedSafeHarborGap: roundCurrency(projectedSafeHarborGap),
+      projectedTaxGap: roundCurrency(projectedTaxGap)
+    },
+    details: {
+      dueSchedule: dueDates.map((row) => ({
+        quarter: row.quarter,
+        dueDate: row.dueAt.toISOString().slice(0, 10),
+        status: row.dueAt <= asOfDate ? "elapsed" : "upcoming"
+      })),
+      asOfDate: asOfDate.toISOString().slice(0, 10)
     }
   };
 }

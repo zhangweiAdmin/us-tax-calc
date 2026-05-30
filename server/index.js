@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   calculateFreelanceTaxes,
+  calculateQuarterlySafeHarbor,
   calculateMortgageRefinance,
   calculateStakingYield
 } from "./lib/taxMath.js";
@@ -49,6 +50,11 @@ const PAGE_CATALOG = [
         question: "Can I rely on this for quarterly estimates?",
         answer:
           "Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account for credits, prior-year safe harbor rules, and any other household income."
+      },
+      {
+        question: "What does the Safe Harbor calculator add?",
+        answer:
+          "It compares the 90% current-year rule against the 100% or 110% prior-year rule, then estimates how much still needs to be paid across the remaining installments."
       },
       {
         question: "How often are tax assumptions refreshed?",
@@ -581,6 +587,13 @@ async function handleApi(req, res, urlObj) {
   if (req.method === "POST" && pathname === "/api/calculate/freelance") {
     const input = await parseJsonBody(req);
     const result = calculateFreelanceTaxes({ taxData, input });
+    sendJson(res, 200, result);
+    return;
+  }
+
+  if (req.method === "POST" && pathname === "/api/calculate/safe-harbor") {
+    const input = await parseJsonBody(req);
+    const result = calculateQuarterlySafeHarbor(input);
     sendJson(res, 200, result);
     return;
   }

@@ -164,6 +164,125 @@
         </article>
       </div>
 
+      <div class="grid safe-harbor-grid">
+        <form id="safeHarborForm" class="card form-card">
+          <h2>Quarterly Safe Harbor Calculator</h2>
+          <p class="card-note">Estimate a safe-harbor payment target to reduce underpayment-penalty risk.</p>
+          <div class="form-grid">
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="safeHarborFilingStatus">Filing Status</label>
+                <select id="safeHarborFilingStatus" name="safeHarborFilingStatus" required>
+                  <option value="single">Single</option>
+                  <option value="married_filing_jointly">Married Filing Jointly</option>
+                  <option value="married_filing_separately">Married Filing Separately</option>
+                  <option value="head_of_household">Head of Household</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="safeHarborTaxYear">Tax Year</label>
+                <input id="safeHarborTaxYear" name="safeHarborTaxYear" type="number" min="2000" max="2100" step="1" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="currentYearTotalTax">Current-Year Total Tax Estimate (USD)</label>
+              <input
+                id="currentYearTotalTax"
+                name="currentYearTotalTax"
+                type="number"
+                min="0"
+                step="100"
+                value="18000"
+                required
+              />
+              <p class="field-help">Tip: after you run the freelance calculator above, this value auto-fills.</p>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="priorYearTotalTax">Prior-Year Total Tax (USD)</label>
+                <input id="priorYearTotalTax" name="priorYearTotalTax" type="number" min="0" step="100" value="16000" required />
+              </div>
+              <div class="field">
+                <label for="priorYearAgi">Prior-Year AGI (USD)</label>
+                <input id="priorYearAgi" name="priorYearAgi" type="number" min="0" step="100" value="120000" required />
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="withholdingYtd">Withholding Paid YTD (USD)</label>
+                <input id="withholdingYtd" name="withholdingYtd" type="number" min="0" step="50" value="0" required />
+              </div>
+              <div class="field">
+                <label for="estimatedPaymentsYtd">Estimated Payments Paid YTD (USD)</label>
+                <input
+                  id="estimatedPaymentsYtd"
+                  name="estimatedPaymentsYtd"
+                  type="number"
+                  min="0"
+                  step="50"
+                  value="0"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="expectedWithholdingRemaining">Expected Remaining Withholding (USD)</label>
+                <input
+                  id="expectedWithholdingRemaining"
+                  name="expectedWithholdingRemaining"
+                  type="number"
+                  min="0"
+                  step="50"
+                  value="0"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="expectedEstimatedPaymentsRemaining">Expected Remaining Estimated Payments (USD)</label>
+                <input
+                  id="expectedEstimatedPaymentsRemaining"
+                  name="expectedEstimatedPaymentsRemaining"
+                  type="number"
+                  min="0"
+                  step="50"
+                  value="0"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field">
+                <label for="safeHarborInstallmentsElapsed">Installments Already Due</label>
+                <select id="safeHarborInstallmentsElapsed" name="safeHarborInstallmentsElapsed" required>
+                  <option value="0">0 (before Q1 due date)</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="safeHarborAsOfDate">As-Of Date</label>
+                <input id="safeHarborAsOfDate" name="safeHarborAsOfDate" type="date" />
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="primary-btn">Calculate Safe Harbor</button>
+        </form>
+
+        <article class="card result-card" id="safeHarborResult">
+          <h2>Safe Harbor Projection</h2>
+          <p class="placeholder">Submit inputs to view your safe-harbor target and payment pacing.</p>
+        </article>
+      </div>
+
       <section class="guide-card">
         <h3>How This Estimate Works</h3>
         <p>
@@ -196,6 +315,11 @@
           <dd>
             Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account
             for credits, prior-year safe harbor rules, and any other household income.
+          </dd>
+          <dt>What does the Safe Harbor calculator add?</dt>
+          <dd>
+            It compares the 90% current-year rule against the 100%/110% prior-year rule, then estimates how much
+            remains to be paid across the installments left in the year.
           </dd>
           <dt>How often are tax assumptions refreshed?</dt>
           <dd>
