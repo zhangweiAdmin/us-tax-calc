@@ -87,83 +87,29 @@
           <li><a class="site-nav-link" href="/terms">Terms</a></li>
         </ul>
       </nav>
+
       <figure class="media-spot">
         <img
           src="/media/freelance-tax-map.svg"
-          alt="Freelance tax planning dashboard illustration with calendar and reserve trend."
+          alt="Estimated-tax planning visual with calendar checkpoints and reserve tracking blocks."
           loading="lazy"
           decoding="async"
         />
-        <figcaption>Visual note: monthly reserve habits usually matter more than one-time filing effort.</figcaption>
+        <figcaption>Visual note: safe-harbor planning works best when reviewed before each installment window.</figcaption>
       </figure>
 
       <section class="guide-card">
-        <h3>Freelance Tax Planning, Built For Real Cash Flow</h3>
+        <h3>Safe Harbor Planning In Plain Numbers</h3>
         <p>
-          This page is intentionally focused on one job: helping freelancers estimate federal tax, self-employment tax,
-          and state income tax from business inputs you can gather in a few minutes. Instead of mixing three calculators
-          on one screen, we keep this route dedicated to freelance planning so assumptions stay clear and decisions stay
-          fast.
+          This page helps you estimate a safe-harbor payment target for quarterly estimated tax planning. It compares
+          current-year and prior-year rule thresholds and shows how much remains to be paid after your year-to-date
+          withholding and estimated payments.
         </p>
         <p>
-          If you need mortgage or staking planning, use the dedicated pages in the top navigation. Each route has its
-          own framework, examples, and FAQ so the content is easier to validate and maintain.
+          If you still need a baseline current-year tax estimate, run the
+          <a href="/">Freelance Tax Calculator</a> first, then use that output here.
         </p>
       </section>
-
-      <div class="grid">
-        <form id="freelanceForm" class="card form-card">
-          <h2>Freelance Tax Calculator</h2>
-          <p class="card-note">Estimated federal income tax + self-employment tax + state income tax.</p>
-          <div class="form-grid">
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="stateCode">State</label>
-                <select id="stateCode" name="stateCode" required></select>
-              </div>
-              <div class="field">
-                <label for="filingStatus">Filing Status</label>
-                <select id="filingStatus" name="filingStatus" required>
-                  <option value="single">Single</option>
-                  <option value="married_filing_jointly">Married Filing Jointly</option>
-                  <option value="head_of_household">Head of Household</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="grossIncome">Annual Gross Freelance Income (USD)</label>
-              <input id="grossIncome" name="grossIncome" type="number" min="0" step="100" value="120000" required />
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="businessExpenses">Business Expenses (USD)</label>
-                <input
-                  id="businessExpenses"
-                  name="businessExpenses"
-                  type="number"
-                  min="0"
-                  step="100"
-                  value="25000"
-                  required
-                />
-              </div>
-              <div class="field">
-                <label for="otherDeductions">Other Deductions (USD)</label>
-                <input id="otherDeductions" name="otherDeductions" type="number" min="0" step="100" value="0" required />
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="primary-btn">Calculate Taxes</button>
-        </form>
-
-        <article class="card result-card" id="freelanceResult">
-          <h2>Estimated Result</h2>
-          <p class="placeholder">Run the calculator to view tax breakdown.</p>
-        </article>
-      </div>
 
       <div class="grid safe-harbor-grid">
         <form id="safeHarborForm" class="card form-card">
@@ -197,7 +143,6 @@
                 value="18000"
                 required
               />
-              <p class="field-help">Tip: after you run the freelance calculator above, this value auto-fills.</p>
             </div>
 
             <div class="form-row form-row-2">
@@ -284,67 +229,48 @@
         </article>
       </div>
 
-      <section class="guide-card">
-        <h3>How This Estimate Works</h3>
-        <p>
-          We start from gross freelance income, subtract business expenses, then estimate self-employment tax and
-          federal/state income tax based on your filing status and selected state. The output is directional planning
-          data, not a filed return.
-        </p>
-        <h3>Use It In A Repeatable Routine</h3>
-        <ul>
-          <li>Update income and expense numbers at least once per month.</li>
-          <li>Compare quarterly estimate against your tax reserve account balance.</li>
-          <li>Re-run after major income changes, not only at deadline week.</li>
-        </ul>
-      </section>
-
       <section class="faq-card">
-        <h3>Freelance Tax FAQ</h3>
+        <h3>Safe Harbor FAQ</h3>
         <dl>
-          <dt>Should I include non-freelance W-2 income in this tool?</dt>
+          <dt>What does this safe harbor calculator estimate?</dt>
           <dd>
-            No. This page is meant for freelance business income planning. If you also have W-2 wages, use this as a
-            partial estimate and combine it with a full tax projection before filing.
+            It estimates a required annual safe-harbor payment and splits the remaining amount across installments left
+            in the year.
           </dd>
-          <dt>Why does self-employment tax look high?</dt>
+          <dt>How does it choose between current-year and prior-year rules?</dt>
           <dd>
-            Self-employment tax covers both the employee and employer portions of Social Security and Medicare, so it
-            is usually higher than first-time freelancers expect.
+            The model compares 90% of current-year estimated tax against the prior-year rule (100% or 110% based on
+            AGI threshold) and uses the smaller target.
           </dd>
-          <dt>Can I rely on this for quarterly estimates?</dt>
+          <dt>Do withholding and estimated payments both count?</dt>
           <dd>
-            Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account
-            for credits, prior-year safe harbor rules, and any other household income.
+            Yes. Withholding paid year-to-date and estimated-tax payments are both credited toward the safe-harbor
+            target in the projection.
           </dd>
-          <dt>What does the Safe Harbor calculator add?</dt>
+          <dt>Does this replace Form 2210 or CPA advice?</dt>
           <dd>
-            It compares the 90% current-year rule against the 100%/110% prior-year rule, then estimates how much
-            remains to be paid across the installments left in the year.
+            No. This is a planning tool. Final penalty calculations can depend on annualized methods, special taxpayer
+            rules, and filing-specific adjustments.
           </dd>
-          <dt>How often are tax assumptions refreshed?</dt>
+          <dt>Can I use the freelance estimator output here?</dt>
           <dd>
-            The backend refreshes source tax tables regularly and stores update metadata. If live fetching fails, the
-            app falls back to the last successful dataset to avoid downtime.
-          </dd>
-          <dt>Which filing statuses are supported?</dt>
-          <dd>
-            Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan
-            to keep bracket assumptions aligned.
+            Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in
+            one planning workflow.
           </dd>
         </dl>
       </section>
+
       <section class="footnote-card">
         <h3>Compliance Notes</h3>
         <ul>
-          <li>This site provides estimates only and is not legal or tax advice.</li>
-          <li>Tax rates are refreshed daily by server-side scraping from public tax data pages.</li>
-          <li>Always verify with IRS/state authorities or a licensed CPA before filing.</li>
+          <li>This calculator provides planning estimates only and is not tax advice.</li>
+          <li>Safe-harbor rules can vary by taxpayer profile; verify final filing positions with a licensed CPA.</li>
+          <li>State estimated-tax obligations may differ from federal patterns.</li>
         </ul>
       </section>
     </main>
 
     <script src="/nav.js" defer></script>
-    <script src="/app.js?v=20260528nav1" type="module"></script>
+    <script src="/app.js?v=20260530safeharborseo1" type="module"></script>
   </body>
 </html>

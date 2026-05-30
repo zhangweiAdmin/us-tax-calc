@@ -1127,3 +1127,21 @@ Format:
 - Action: Deployed Safe Harbor release to production server.
 - Result: Executed `./scripts/vps-tool.sh deploy` against `97.64.82.143`; rsync + remote restart succeeded, service reported `active`, local service health check on server returned HTTP 200 JSON, and public HTTPS checks passed for both `/api/health` and `/api/calculate/safe-harbor`.
 - Next: Commit and push source updates (`Safe Harbor feature + logs`) to remote GitHub repository.
+
+## 2026-05-30 22:13:52 CST
+- Step: 186
+- Action: Started Safe Harbor SEO-focused discoverability enhancement.
+- Result: Added a dedicated landing route plan (`/safe-harbor-calculator`) with standalone SEO metadata + FAQ intent, plus internal link exposure from calculator navigation areas to strengthen crawl paths and keyword relevance.
+- Next: Validate rendered page/head/meta output and deploy the SEO enhancement.
+
+## 2026-05-30 22:15:17 CST
+- Step: 187
+- Action: Completed local SEO validation for Safe Harbor landing page.
+- Result: Verified `/safe-harbor-calculator` renders expected SEO title, canonical URL, H1, FAQ JSON-LD, and Safe Harbor form; confirmed `/sitemap.xml` includes the new Safe Harbor URL entry.
+- Next: Deploy SEO enhancement to production and verify public responses.
+
+## 2026-05-30 22:16:35 CST
+- Step: 188
+- Action: Deployed Safe Harbor SEO enhancement and verified live indexing signals.
+- Result: Deployed to production via `./scripts/vps-tool.sh deploy`; public page `https://zlxjy.com/safe-harbor-calculator/` now returns the expected SEO title, canonical URL, Safe Harbor form, and FAQ schema. Live `https://zlxjy.com/sitemap.xml` includes `/safe-harbor-calculator/`.
+- Next: Commit and push SEO enhancement changes to remote repository.

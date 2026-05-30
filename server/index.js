@@ -20,9 +20,9 @@ const PORT = Number(process.env.PORT || 3000);
 const ADMIN_REFRESH_TOKEN = process.env.ADMIN_REFRESH_TOKEN || null;
 const ADSENSE_CLIENT_ID = normalizeAdSenseClientId(process.env.ADSENSE_CLIENT_ID);
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL);
-const SITE_TITLE = "US Calculator Hub | Freelance Tax, Refinance, Staking";
+const SITE_TITLE = "US Calculator Hub | Freelance Tax, Safe Harbor, Refinance, Staking";
 const SITE_DESCRIPTION =
-  "State-aware freelance tax estimator with mortgage refinance and multi-chain staking calculators.";
+  "State-aware freelance tax estimator with quarterly safe harbor, mortgage refinance, and multi-chain staking calculators.";
 const PAGE_CATALOG = [
   {
     path: "/",
@@ -65,6 +65,45 @@ const PAGE_CATALOG = [
         question: "Which filing statuses are supported?",
         answer:
           "Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan to keep bracket assumptions aligned."
+      }
+    ]
+  },
+  {
+    path: "/safe-harbor-calculator",
+    templatePath: "safe-harbor-calculator/index.html",
+    initialTab: "freelance",
+    title: "Quarterly Safe Harbor Calculator | Estimated Tax Planning",
+    description:
+      "Estimate safe-harbor quarterly payment targets using 90% current-year tax or 100%/110% prior-year rules with installment pacing.",
+    heading: "Quarterly Safe Harbor Calculator",
+    subhead:
+      "Plan estimated-tax payments with a safe-harbor target so underpayment-penalty risk is easier to manage throughout the year.",
+    about: [{ "@type": "Thing", name: "Quarterly Safe Harbor Calculator" }],
+    faqs: [
+      {
+        question: "What does this safe harbor calculator estimate?",
+        answer:
+          "It estimates a required annual safe-harbor payment and splits the remaining amount across installments left in the year."
+      },
+      {
+        question: "How does it choose between current-year and prior-year rules?",
+        answer:
+          "The model compares 90% of current-year estimated tax against the prior-year rule (100% or 110% based on AGI threshold) and uses the smaller target."
+      },
+      {
+        question: "Do withholding and estimated payments both count?",
+        answer:
+          "Yes. Withholding paid year-to-date and estimated-tax payments are both credited toward the safe-harbor target in the projection."
+      },
+      {
+        question: "Does this replace Form 2210 or CPA advice?",
+        answer:
+          "No. This is a planning tool. Final penalty calculations can depend on annualized methods, special taxpayer rules, and filing-specific adjustments."
+      },
+      {
+        question: "Can I use the freelance estimator output here?",
+        answer:
+          "Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in one planning workflow."
       }
     ]
   },
@@ -149,7 +188,11 @@ const PAGE_CATALOG = [
 ];
 const PAGE_BY_PATH = new Map(PAGE_CATALOG.map((page) => [page.path, page]));
 const DEFAULT_PAGE = PAGE_BY_PATH.get("/");
-const REDIRECT_PATHS = new Map([["/freelance-tax-calculator", "/"]]);
+const REDIRECT_PATHS = new Map([
+  ["/freelance-tax-calculator", "/"],
+  ["/quarterly-safe-harbor-calculator", "/safe-harbor-calculator"],
+  ["/safe-harbor-tax-calculator", "/safe-harbor-calculator"]
+]);
 const ARTICLE_MANIFEST = loadArticleManifest();
 const ARTICLE_HUB_LASTMOD = resolveLatestArticleDate(ARTICLE_MANIFEST);
 const ARTICLE_SITEMAP_PAGES = ARTICLE_MANIFEST.map((item) => ({
