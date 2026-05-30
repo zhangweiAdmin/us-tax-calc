@@ -1091,3 +1091,9 @@ Format:
 - Action: Activated ImprovMX forwarding for `zlxjy.com`.
 - Result: Using the provided API key, created the domain in ImprovMX and added alias `coco@zlxjy.com -> 785432128@qq.com`; authoritative DNS still returns the expected MX/SPF records, while a local resolver check lagged behind and reported no MX yet.
 - Next: Re-run verification after DNS propagation and send a test message to confirm delivery to QQ.
+
+## 2026-05-30 11:02:47 CST
+- Step: 180
+- Action: Sent a Gmail test message for forwarding verification.
+- Result: Using the desktop Chrome Gmail session, sent a test email to `coco@zlxjy.com` with subject `ImprovMX forwarding test 1780109656`; Gmail reported the message as sent.
+- Next: Check `785432128@qq.com` for delivery and confirm the forwarded message arrived.
