@@ -105,6 +105,7 @@ const TOPIC_CONTEXT = {
 };
 
 const BASE_PUBLISH_DATE = new Date(Date.UTC(2026, 4, 27));
+const LEGACY_SCHEDULED_ARTICLE_COUNT = 20;
 const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("en-US", {
   month: "long",
   day: "numeric",
@@ -1299,6 +1300,55 @@ const articles = [
         a: "Yes. Process quality compounds, regardless of income size."
       }
     ]
+  },
+  {
+    slug: "freelancer-safe-harbor-quarterly-tax-playbook",
+    title: "A Freelance Safe Harbor Playbook: How To Pay Quarterly Taxes Without Guessing Every Deadline",
+    description:
+      "A practical Safe Harbor planning guide for freelancers who want calmer quarterly tax payments and fewer penalty surprises.",
+    audience: "freelancers and independent contractors with uneven income",
+    scenario:
+      "A web developer has one strong quarter, one slow quarter, and a late client payment that lands in December. Every due date feels like a brand-new puzzle, and by September she is no longer sure whether she should follow current-year estimates or lean on the prior-year safe harbor. She is not lazy, and she is not avoiding the issue. She simply does not have a written process that tells her what to do when income swings.",
+    coreIdea:
+      "safe harbor works best as an operating rule: define the target early, document your payment path, and adjust from evidence instead of stress",
+    steps: [
+      "Start by collecting last year's total tax, expected current-year net income, and year-to-date payments in one worksheet before touching any calculator.",
+      "Compare the current-year estimate method and prior-year safe harbor method side by side, then choose a default method for the quarter and write down why.",
+      "Break the annual required payment into remaining installments based on what has already been paid, so each deadline has a clear target instead of a vague guess.",
+      "When business income changes sharply, rerun the estimate and mark whether you are still on track under your chosen rule, rather than switching methods emotionally.",
+      "Keep a short payment memo for each quarter that records date, amount, method, and assumption notes, so year-end reconciliation is fast and defensible."
+    ],
+    example:
+      "Consider Maya, a solo UX contractor in Austin. Last year her total federal tax was $24,000. Her adjusted gross income stayed below the higher-income threshold, so her prior-year safe harbor target this year is still based on 100% of that amount. At the same time, her current-year projection in March looked lower because one long contract ended and the replacement work had not started yet. She faced the same confusion many freelancers face: should she pay toward the lower estimate and hope it stays true, or should she anchor to the prior-year safe harbor and accept that she might temporarily overpay? She chose a simple rule. She made the prior-year safe harbor her compliance baseline and treated the current-year estimate as a planning signal. By June, her income was recovering, and the choice looked wise because the lower March estimate had already become stale. In September she had paid $16,500 year to date, but the safe harbor track suggested she should be at $18,000 by that point. Instead of panicking, she used her worksheet: required annual payment, payments already made, remaining deadlines. She sent an extra catch-up payment before the September due date and removed most of the gap. In January she paid the final installment on schedule, then compared the total with her final return outcome. She still owed a small balance at filing time, but she avoided underpayment penalty territory and did not have to borrow from her operating account at the last minute. The key result was not that every estimate was perfect. The key result was that each quarter had a documented rule, a documented target, and a calm adjustment path when reality changed.",
+    mistakes: [
+      "Choosing a payment amount from intuition because the quarter felt slow, without checking the written required-payment target.",
+      "Switching between methods every deadline without documenting the reason, which creates confusion and weakens year-end review.",
+      "Ignoring year-to-date payment totals until the week of the deadline, then scrambling with incomplete numbers.",
+      "Assuming one strong quarter means the entire year estimate is locked, even when contract risk is still high."
+    ],
+    routine: [
+      "Two weeks before each IRS due date: refresh worksheet inputs and run both methods in the calculator.",
+      "One week before due date: select payment amount, post it to your memo log, and schedule transfer from tax reserve account.",
+      "First week after payment: reconcile confirmation records and update remaining annual target for the next quarter."
+    ],
+    faq: [
+      {
+        q: "If my income dropped this year, should I ignore prior-year safe harbor?",
+        a: "Not automatically. A lower current-year estimate can be valid, but abandoning safe harbor without a written comparison can increase penalty risk. Many freelancers use prior-year safe harbor as the compliance floor and current-year estimates for tactical adjustments."
+      },
+      {
+        q: "Do I need accounting software for this process?",
+        a: "Helpful, yes. Mandatory, no. A clean spreadsheet with recurring calendar reminders can work if you keep it updated. The non-negotiable part is consistent records for income, expenses, and payments already made."
+      },
+      {
+        q: "What is the minimum data I should track each quarter?",
+        a: "Track prior-year total tax, current-year projected net income, filing status, federal payments made to date, and upcoming due dates. Without those five inputs, quarter-to-quarter decisions become guesswork."
+      },
+      {
+        q: "Can I still owe money in April even if I followed safe harbor?",
+        a: "Yes. Safe harbor is about reducing underpayment-penalty risk, not guaranteeing a zero balance due. You may still owe tax at filing, but with proper planning it should be manageable instead of a surprise shock."
+      }
+    ]
   }
 ];
 
@@ -1395,14 +1445,20 @@ function renderFaqSchema(article) {
 }
 
 function getArticlePublishMeta(index) {
-  const dayOffset = -Math.floor(index / 2);
-  const date = new Date(
-    Date.UTC(
-      BASE_PUBLISH_DATE.getUTCFullYear(),
-      BASE_PUBLISH_DATE.getUTCMonth(),
-      BASE_PUBLISH_DATE.getUTCDate() + dayOffset
-    )
-  );
+  let date;
+  if (index < LEGACY_SCHEDULED_ARTICLE_COUNT) {
+    const dayOffset = -Math.floor(index / 2);
+    date = new Date(
+      Date.UTC(
+        BASE_PUBLISH_DATE.getUTCFullYear(),
+        BASE_PUBLISH_DATE.getUTCMonth(),
+        BASE_PUBLISH_DATE.getUTCDate() + dayOffset
+      )
+    );
+  } else {
+    const now = new Date();
+    date = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  }
   return {
     iso: date.toISOString().slice(0, 10),
     label: DATE_LABEL_FORMATTER.format(date)
@@ -1801,7 +1857,7 @@ async function run() {
   await fs.rm(OUT_DIR, { recursive: true, force: true });
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  const selectedArticles = articles.slice(0, 20);
+  const selectedArticles = [...articles.slice(0, 20), articles[articles.length - 1]];
   const manifest = [];
 
   for (const [index, article] of selectedArticles.entries()) {

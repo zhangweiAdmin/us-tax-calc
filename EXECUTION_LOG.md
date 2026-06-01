@@ -1145,3 +1145,27 @@ Format:
 - Action: Deployed Safe Harbor SEO enhancement and verified live indexing signals.
 - Result: Deployed to production via `./scripts/vps-tool.sh deploy`; public page `https://zlxjy.com/safe-harbor-calculator/` now returns the expected SEO title, canonical URL, Safe Harbor form, and FAQ schema. Live `https://zlxjy.com/sitemap.xml` includes `/safe-harbor-calculator/`.
 - Next: Commit and push SEO enhancement changes to remote repository.
+
+## 2026-05-31 19:50:13 CST
+- Step: 189
+- Action: Optimized homepage freelance guide text to describe the active calculator directly.
+- Result: Replaced the previous generic planning paragraph in `public/index.html` with explicit calculator-focused copy: clarified required inputs, core output metrics, planning-only boundary, and the follow-up relationship to the Safe Harbor module.
+- Next: Deploy this copy update to production if immediate online sync is required.
+
+## 2026-06-01 08:30:51 CST
+- Step: 190
+- Action: Added a new long-form project-related article focused on freelance Safe Harbor quarterly tax planning.
+- Result: Appended article source content in `scripts/generate-articles.mjs`, updated generation selection to preserve the existing 20 published posts while including this new post, regenerated `public/articles/*`, and verified the new page `public/articles/freelancer-safe-harbor-quarterly-tax-playbook/index.html` is indexed in `public/articles/index.html` with `1806` words.
+- Next: Deploy and push this content update when release timing is confirmed.
+
+## 2026-06-01 08:34:01 CST
+- Step: 191
+- Action: Updated article publish-date logic so newly added posts use the current date.
+- Result: Added `LEGACY_SCHEDULED_ARTICLE_COUNT = 20` in `scripts/generate-articles.mjs`; the first 20 historical posts keep scheduled backdated timestamps, while any appended post now uses current-date publication metadata. Regenerated article outputs and verified `freelancer-safe-harbor-quarterly-tax-playbook` now shows `datePublished: 2026-06-01` and `Published June 1, 2026`.
+- Next: Deploy and push to remote when you are ready to release this update.
+
+## 2026-06-01 08:37:23 CST
+- Step: 192
+- Action: Published the pending content update to production.
+- Result: Executed `VPS_HOST=97.64.82.143 VPS_PORT=22 VPS_USER=root ./scripts/vps-tool.sh deploy`; rsync sync + remote service restart succeeded, `us-tax-calc.service` is `active`, server-local health endpoint returned OK JSON, and public HTTPS checks confirmed the new article page `/articles/freelancer-safe-harbor-quarterly-tax-playbook/` with `Published June 1, 2026 · 1806 words` plus article list exposure on `/articles/`.
+- Next: Commit and push the deployed source changes to `origin/master` for repository synchronization.
