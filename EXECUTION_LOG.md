@@ -1199,3 +1199,9 @@ Format:
 - Action: Deployed Bing verification and article-ordering updates to production and verified public access.
 - Result: Ran `./scripts/vps-tool.sh deploy` with VPS credentials, confirmed `us-tax-calc.service` is `active`, and verified `https://zlxjy.com/BingSiteAuth.xml` returns HTTP `200` with expected XML content. Also confirmed `/articles/` shows the newest article first (reverse-chronological ordering live).
 - Next: Commit and push the deployed source updates and execution logs to `origin/master`.
+
+## 2026-06-01 22:07:30 CST
+- Step: 198
+- Action: Synchronized deployment changes to remote GitHub repository.
+- Result: Created commit `f53b4da` (`feat: expose BingSiteAuth at site root and sort articles newest-first`) and pushed `master` to `origin` successfully (`a6bdbb8..f53b4da`), including `BingSiteAuth.xml`, server root-file mapping, and article reverse-chronological list behavior.
+- Next: Complete Bing Webmaster verification using `https://zlxjy.com/BingSiteAuth.xml`.
