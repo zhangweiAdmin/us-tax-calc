@@ -14,7 +14,9 @@ import { startDailyTaxRefresh } from "./lib/scheduler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ROOT_DIR = path.resolve(__dirname, "..");
 const PUBLIC_DIR = path.resolve(__dirname, "../public");
+const BING_SITE_AUTH_PATH = path.join(ROOT_DIR, "BingSiteAuth.xml");
 
 const PORT = Number(process.env.PORT || 3000);
 const ADMIN_REFRESH_TOKEN = process.env.ADMIN_REFRESH_TOKEN || null;
@@ -497,6 +499,20 @@ async function renderPageHtml(req, page = DEFAULT_PAGE) {
 }
 
 async function serveStaticFile(req, res, pathname) {
+  if (pathname === "/BingSiteAuth.xml") {
+    try {
+      const xml = await fs.readFile(BING_SITE_AUTH_PATH);
+      res.writeHead(200, {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Cache-Control": "public, max-age=300"
+      });
+      res.end(xml);
+    } catch {
+      sendText(res, 404, "Not Found");
+    }
+    return;
+  }
+
   if (pathname === "/ads.txt") {
     res.writeHead(200, {
       "Content-Type": "text/plain; charset=utf-8",

@@ -1876,9 +1876,10 @@ async function run() {
     });
   }
 
-  const indexHtml = renderIndex(manifest);
+  const sortedManifest = [...manifest].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  const indexHtml = renderIndex(sortedManifest);
   await fs.writeFile(path.join(OUT_DIR, "index.html"), indexHtml, "utf8");
-  await fs.writeFile(path.join(OUT_DIR, "manifest.json"), JSON.stringify(manifest, null, 2), "utf8");
+  await fs.writeFile(path.join(OUT_DIR, "manifest.json"), JSON.stringify(sortedManifest, null, 2), "utf8");
 
   console.log(`Generated ${manifest.length} articles.`);
   const minWords = Math.min(...manifest.map((item) => item.wordCount));

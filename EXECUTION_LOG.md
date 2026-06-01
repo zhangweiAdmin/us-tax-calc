@@ -1181,3 +1181,21 @@ Format:
 - Action: Pushed release commits to remote GitHub repository.
 - Result: Successfully pushed `master` to `origin` (`46dca09..a3a37cc`), including release commit `711ea56` and release-log commit `a3a37cc`; remote repository is now aligned with the deployed production code.
 - Next: Monitor indexing/performance signals and continue new content publishing with current-date policy.
+
+## 2026-06-01 08:44:03 CST
+- Step: 195
+- Action: Updated article ordering to reverse-chronological by publish date.
+- Result: Modified `scripts/generate-articles.mjs` to sort manifest entries by `publishedAt` descending before rendering `public/articles/index.html` and writing `public/articles/manifest.json`; regenerated article outputs and verified the newest article now appears first in the list.
+- Next: Deploy and push this ordering update if immediate online effect is required.
+
+## 2026-06-01 22:05:24 CST
+- Step: 196
+- Action: Implemented Bing root verification file serving.
+- Result: Updated `server/index.js` to map `GET /BingSiteAuth.xml` directly to project-root `BingSiteAuth.xml` so Bing verification can access the required file at site root URL without moving the file into `public/`.
+- Next: Deploy the change and verify `https://zlxjy.com/BingSiteAuth.xml` returns the XML content successfully.
+
+## 2026-06-01 22:06:28 CST
+- Step: 197
+- Action: Deployed Bing verification and article-ordering updates to production and verified public access.
+- Result: Ran `./scripts/vps-tool.sh deploy` with VPS credentials, confirmed `us-tax-calc.service` is `active`, and verified `https://zlxjy.com/BingSiteAuth.xml` returns HTTP `200` with expected XML content. Also confirmed `/articles/` shows the newest article first (reverse-chronological ordering live).
+- Next: Commit and push the deployed source updates and execution logs to `origin/master`.
