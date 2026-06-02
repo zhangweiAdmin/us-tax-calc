@@ -1205,3 +1205,27 @@ Format:
 - Action: Synchronized deployment changes to remote GitHub repository.
 - Result: Created commit `f53b4da` (`feat: expose BingSiteAuth at site root and sort articles newest-first`) and pushed `master` to `origin` successfully (`a6bdbb8..f53b4da`), including `BingSiteAuth.xml`, server root-file mapping, and article reverse-chronological list behavior.
 - Next: Complete Bing Webmaster verification using `https://zlxjy.com/BingSiteAuth.xml`.
+
+## 2026-06-02 08:34:59 CST
+- Step: 199
+- Action: Designed and integrated a site-themed `favicon.ico`.
+- Result: Added deterministic generator script `scripts/generate-favicon.mjs` and produced `public/favicon.ico` (16/32/48 px layers) using the site's brand palette (blue primary + orange accent + compliance shield motif). Updated `server/index.js` head injection logic so pages automatically include `<link rel="icon" type="image/x-icon" href="/favicon.ico" />`, and verified local responses for `/`, `/articles/`, and `/favicon.ico` are correct.
+- Next: Deploy and push favicon changes if immediate production sync is required.
+
+## 2026-06-02 08:34:59 CST
+- Step: 199
+- Action: Designed and integrated a finance-themed favicon for the site.
+- Result: Added generator script `scripts/generate-favicon.mjs` and produced `public/favicon.ico` (16/32/48 multi-size ICO). Updated `server/index.js` head-injection logic so every HTML response auto-includes `<link rel="icon" ... href="/favicon.ico">`. Local checks confirmed `/favicon.ico` returns HTTP 200 and both homepage and article pages include the favicon link.
+- Next: Deploy and push this favicon update when release timing is confirmed.
+
+## 2026-06-02 08:34:59 CST
+- Step: 199
+- Action: Designed and integrated a site-specific favicon for the finance/tax calculator brand.
+- Result: Added generator script `scripts/generate-favicon.mjs`, produced `public/favicon.ico` (multi-size icon set: 16/32/48), and updated server HTML head injection logic in `server/index.js` so pages automatically include `<link rel="icon" type="image/x-icon" href="/favicon.ico" />`. Local checks confirmed `/favicon.ico` returns HTTP `200` and homepage/article pages include the favicon link.
+- Next: Deploy and push this favicon update if immediate production sync is required.
+
+## 2026-06-02 08:40:34 CST
+- Step: 200
+- Action: Deployed favicon update to production and ran live verification checks.
+- Result: Executed `./scripts/vps-tool.sh deploy` with VPS credentials, confirmed `us-tax-calc.service` is `active`, verified `https://zlxjy.com/api/health` returns OK, verified `https://zlxjy.com/favicon.ico` returns HTTP `200` (`image/x-icon`), and confirmed homepage HTML includes `<link rel="icon" type="image/x-icon" href="/favicon.ico" />`.
+- Next: Commit and push deployed changes (`favicon assets + head injection + logs`) to `origin/master`.

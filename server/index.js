@@ -335,10 +335,19 @@ function buildAdSenseHeadSnippet() {
 }
 
 function injectAdSenseHead(html) {
+  if (!html.includes("</head>")) return html;
+
+  let result = html;
+
+  if (!/rel=["'](?:shortcut\s+)?icon["']/i.test(result)) {
+    const faviconSnippet = '<link rel="icon" type="image/x-icon" href="/favicon.ico" />';
+    result = result.replace("</head>", `    ${faviconSnippet}\n  </head>`);
+  }
+
   const snippet = buildAdSenseHeadSnippet();
-  if (!snippet) return html;
-  if (html.includes('name="google-adsense-account"')) return html;
-  return html.replace("</head>", `    ${snippet}\n  </head>`);
+  if (!snippet) return result;
+  if (result.includes('name="google-adsense-account"')) return result;
+  return result.replace("</head>", `    ${snippet}\n  </head>`);
 }
 
 function buildAdsTxt() {
