@@ -213,6 +213,7 @@ const STATIC_SITEMAP_PAGES = [
   { path: "/terms", changefreq: "yearly", priority: "0.4" },
   ...ARTICLE_SITEMAP_PAGES
 ];
+const FAVICON_VERSION = "20260602";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -340,8 +341,12 @@ function injectAdSenseHead(html) {
   let result = html;
 
   if (!/rel=["'](?:shortcut\s+)?icon["']/i.test(result)) {
-    const faviconSnippet = '<link rel="icon" type="image/x-icon" href="/favicon.ico" />';
-    result = result.replace("</head>", `    ${faviconSnippet}\n  </head>`);
+    const iconHref = `/favicon.ico?v=${FAVICON_VERSION}`;
+    const faviconSnippets = [
+      `<link rel="icon" type="image/x-icon" href="${iconHref}" />`,
+      `<link rel="shortcut icon" href="${iconHref}" />`
+    ].join("\n    ");
+    result = result.replace("</head>", `    ${faviconSnippets}\n  </head>`);
   }
 
   const snippet = buildAdSenseHeadSnippet();
@@ -593,7 +598,11 @@ async function serveStaticFile(req, res, pathname) {
     const ext = path.extname(absolutePath).toLowerCase();
     const mime = MIME[ext] || "application/octet-stream";
     const fileData = await fs.readFile(absolutePath);
-    res.writeHead(200, { "Content-Type": mime });
+    const headers = { "Content-Type": mime };
+    if (ext === ".ico") {
+      headers["Cache-Control"] = "public, max-age=300";
+    }
+    res.writeHead(200, headers);
     res.end(fileData);
   } catch {
     sendText(res, 404, "Not Found");

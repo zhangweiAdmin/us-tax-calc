@@ -1235,3 +1235,15 @@ Format:
 - Action: Pushed favicon release commit to remote GitHub repository.
 - Result: Created/pushed commit `c3a6bcc` (`feat: add finance-themed favicon and auto inject icon link`) to `origin/master` (`12358e7..c3a6bcc`), synchronizing repository state with production deployment.
 - Next: Continue with Bing/Google index monitoring and publish subsequent content updates as needed.
+
+## 2026-06-02 08:46:36 CST
+- Step: 202
+- Action: Applied favicon cache-busting fix for browsers that still show no tab icon after refresh.
+- Result: Updated `server/index.js` to inject versioned favicon links (`/favicon.ico?v=20260602`) with both `icon` and `shortcut icon` rel values, and set `.ico` response cache header to `public, max-age=300`. Local verification confirmed homepage head now contains versioned favicon links and icon endpoint returns HTTP 200.
+- Next: Deploy this fix to production and re-verify favicon visibility on `https://zlxjy.com`.
+
+## 2026-06-02 08:47:26 CST
+- Step: 203
+- Action: Deployed favicon cache-busting fix to production and completed live validation.
+- Result: Deployment succeeded (`us-tax-calc.service=active`), homepage HTML now exposes versioned icon links (`/favicon.ico?v=20260602`) including `shortcut icon`, and icon endpoint returns HTTP `200` with `Cache-Control: public, max-age=300`.
+- Next: Commit and push this fix + execution logs to `origin/master`.
