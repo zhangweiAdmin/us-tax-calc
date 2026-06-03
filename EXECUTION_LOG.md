@@ -1391,3 +1391,15 @@ Format:
 - Action: Confirmed the public site now renders the five calculator buttons left-aligned after deployment.
 - Result: The live HTTPS page reports `justify-content: flex-start`, with the first calculator button starting at the left edge plus container padding.
 - Next: Final handoff to the user.
+
+## 2026-06-03 01:25:00 CST
+- Step: 64
+- Action: Refined the mobile nav into two states: normal stacked navigation when the primary buttons fit, and compact menu mode only when the primary buttons overflow.
+- Result: The menu button is now meant to appear only when the primary calculator row cannot fully fit on mobile.
+- Next: Verify the behavior at both a roomy mobile width and a narrow mobile width.
+
+## 2026-06-03 01:30:00 CST
+- Step: 65
+- Action: Verified the mobile nav behavior at 390px and 320px widths.
+- Result: At 390px the menu button stays hidden and the secondary links remain visible; at 320px the menu button appears and the secondary links collapse into the drawer.
+- Next: Commit the change, push it, and deploy the updated site.

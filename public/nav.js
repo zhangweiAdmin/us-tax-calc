@@ -32,6 +32,17 @@ function isMobileNavMode() {
   return window.matchMedia(`(max-width: ${NAV_MOBILE_BREAKPOINT}px)`).matches;
 }
 
+function getNavInnerWidth(nav) {
+  const rect = nav.getBoundingClientRect();
+  const style = window.getComputedStyle(nav);
+  const paddingLeft = Number.parseFloat(style.paddingLeft) || 0;
+  const paddingRight = Number.parseFloat(style.paddingRight) || 0;
+  const borderLeft = Number.parseFloat(style.borderLeftWidth) || 0;
+  const borderRight = Number.parseFloat(style.borderRightWidth) || 0;
+
+  return Math.max(0, rect.width - paddingLeft - paddingRight - borderLeft - borderRight);
+}
+
 function applyNavActiveState() {
   const currentPath = normalizeNavPathname(window.location.pathname);
   const links = Array.from(document.querySelectorAll(".site-nav-link[href^='/']"));
@@ -98,38 +109,50 @@ function collectDrawerLinks(nav) {
 
 function syncPrimaryNavOverflow(nav) {
   const primaryList = nav.querySelector(".site-nav-list-primary");
+  const secondaryList = nav.querySelector(".site-nav-list-secondary");
   const toggle = nav.querySelector(".nav-mobile-toggle");
-  if (!primaryList || !toggle) return;
+  if (!primaryList || !secondaryList || !toggle) return;
 
   const items = Array.from(primaryList.children).filter((item) => item instanceof HTMLElement);
   for (const item of items) {
     item.hidden = false;
   }
 
-  if (!isMobileNavMode()) return;
+  let needsMore = false;
 
-  const availableWidth = primaryList.getBoundingClientRect().width;
-  if (availableWidth <= 0 || items.length === 0) return;
+  if (isMobileNavMode()) {
+    const availableWidth = getNavInnerWidth(nav);
+    if (availableWidth > 0 && items.length > 0) {
+      const gapValue = getComputedStyle(primaryList).columnGap || getComputedStyle(primaryList).gap || "0";
+      const gap = Number.parseFloat(gapValue) || 0;
+      let usedWidth = 0;
+      let visibleCount = 0;
 
-  const gapValue = getComputedStyle(primaryList).columnGap || getComputedStyle(primaryList).gap || "0";
-  const gap = Number.parseFloat(gapValue) || 0;
-  let usedWidth = 0;
-  let visibleCount = 0;
+      for (const item of items) {
+        const itemWidth = item.getBoundingClientRect().width;
+        const nextWidth = visibleCount === 0 ? itemWidth : usedWidth + gap + itemWidth;
 
-  for (const item of items) {
-    const itemWidth = item.getBoundingClientRect().width;
-    const nextWidth = visibleCount === 0 ? itemWidth : usedWidth + gap + itemWidth;
+        if (nextWidth <= availableWidth + 0.5) {
+          usedWidth = nextWidth;
+          visibleCount += 1;
+        } else {
+          item.hidden = true;
+        }
+      }
 
-    if (nextWidth <= availableWidth + 0.5) {
-      usedWidth = nextWidth;
-      visibleCount += 1;
-    } else {
-      item.hidden = true;
+      if (visibleCount === 0 && items.length > 0) {
+        items[0].hidden = false;
+      }
+
+      needsMore = items.some((item) => item.hidden);
     }
   }
 
-  if (visibleCount === 0 && items.length > 0) {
-    items[0].hidden = false;
+  nav.classList.toggle("site-nav-needs-more", needsMore);
+  toggle.hidden = !needsMore;
+
+  if (!needsMore && activeDrawerTrigger === toggle) {
+    closeDrawer();
   }
 }
 
@@ -305,6 +328,7 @@ function initSiteNavMoreDrawer() {
     toggle.setAttribute("aria-label", "Open more pages menu");
     toggle.setAttribute("aria-haspopup", "menu");
     toggle.setAttribute("aria-expanded", "false");
+    toggle.hidden = true;
 
     const label = nav.getAttribute("aria-label") || "More pages";
     toggle.addEventListener("click", () => {
