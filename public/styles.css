@@ -149,7 +149,7 @@ h1 {
 }
 
 .site-nav-list-primary {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .site-nav-list-primary .site-nav-link {

@@ -1355,3 +1355,21 @@ Format:
 - Action: Verified the public HTTPS endpoint after the VPS restart.
 - Result: `https://zlxjy.com/` returned HTTP 200 and `https://zlxjy.com/api/health` returned a healthy JSON payload.
 - Next: Final handoff to the user.
+
+## 2026-06-03 00:20:00 CST
+- Step: 58
+- Action: Started the alignment tweak requested by the user and inspected the current primary-nav flex rules.
+- Result: The primary calculator row is still centered by `justify-content: center` on `.site-nav-list-primary`.
+- Next: Switch the primary calculator row to left alignment and verify the result.
+
+## 2026-06-03 01:10:00 CST
+- Step: 59
+- Action: Started validation of the left-aligned primary calculator row on a temporary local server.
+- Result: The code change is in place; next step is to confirm the rendered nav starts from the left edge instead of centering the five buttons.
+- Next: Capture a local screenshot from the temporary server and inspect the nav alignment.
+
+## 2026-06-03 01:12:00 CST
+- Step: 60
+- Action: Verified the primary calculator nav in headless Chrome after the alignment tweak.
+- Result: The primary row now uses `justify-content: flex-start`, and the first calculator button starts from the left edge with only the container padding offset.
+- Next: Commit the change, push it to the remote repository, and deploy the updated site.
