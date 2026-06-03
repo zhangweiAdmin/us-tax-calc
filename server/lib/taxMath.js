@@ -341,6 +341,90 @@ export function calculateQuarterlySafeHarbor(input = {}) {
   };
 }
 
+export function calculateHomeOfficeDeduction(input = {}) {
+  const officeSquareFeet = clampNonNegative(input.officeSquareFeet);
+  const totalHomeSquareFeet = clampNonNegative(input.totalHomeSquareFeet);
+  const annualHomeExpenses = clampNonNegative(input.annualHomeExpenses);
+  const directOfficeExpenses = clampNonNegative(input.directOfficeExpenses);
+  const annualDepreciation = clampNonNegative(input.annualDepreciation);
+  const businessIncomeBeforeHomeOffice = clampNonNegative(
+    input.businessIncomeBeforeHomeOffice
+  );
+  const exclusiveUseAffirmed = Boolean(input.exclusiveUseAffirmed);
+  const regularUseAffirmed = Boolean(input.regularUseAffirmed);
+
+  const businessUseRatio =
+    totalHomeSquareFeet > 0 ? Math.min(officeSquareFeet / totalHomeSquareFeet, 1) : 0;
+  const businessUsePercent = Number((businessUseRatio * 100).toFixed(2));
+
+  const simplifiedOfficeExpense = Math.min(officeSquareFeet, 300) * 5;
+  const simplifiedPreLimit = directOfficeExpenses + simplifiedOfficeExpense;
+  const actualPreLimit =
+    directOfficeExpenses + annualDepreciation + annualHomeExpenses * businessUseRatio;
+
+  const simplifiedDeduction = Math.min(businessIncomeBeforeHomeOffice, simplifiedPreLimit);
+  const actualDeduction = Math.min(businessIncomeBeforeHomeOffice, actualPreLimit);
+
+  const recommendedMethod =
+    actualDeduction > simplifiedDeduction
+      ? "Actual expense method"
+      : simplifiedDeduction > actualDeduction
+        ? "Simplified method"
+        : "Either method";
+
+  const qualificationWarning =
+    exclusiveUseAffirmed && regularUseAffirmed
+      ? null
+      : "Exclusive and regular use are generally required for the home-office deduction. If the space is shared with personal use, the deduction may not qualify.";
+
+  const businessIncomeLimitHit =
+    businessIncomeBeforeHomeOffice > 0 && actualPreLimit > businessIncomeBeforeHomeOffice;
+
+  const recommendedDeductionValue = Math.max(simplifiedDeduction, actualDeduction);
+
+  return {
+    assumptions: [
+      "Estimate only. This tool compares the simplified method against an actual-expense estimate.",
+      "Simplified method uses $5 per square foot up to 300 square feet.",
+      "Actual method estimate includes direct office expenses, a share of home expenses, and optional depreciation.",
+      "The deduction is limited to business income before the home-office deduction in this estimate."
+    ],
+    input: {
+      officeSquareFeet,
+      totalHomeSquareFeet,
+      annualHomeExpenses: roundCurrency(annualHomeExpenses),
+      directOfficeExpenses: roundCurrency(directOfficeExpenses),
+      annualDepreciation: roundCurrency(annualDepreciation),
+      businessIncomeBeforeHomeOffice: roundCurrency(businessIncomeBeforeHomeOffice),
+      exclusiveUseAffirmed,
+      regularUseAffirmed
+    },
+    breakdown: {
+      businessUseRatio: Number(businessUseRatio.toFixed(4)),
+      businessUsePercent,
+      simplifiedOfficeExpense: roundCurrency(simplifiedOfficeExpense),
+      simplifiedPreLimit: roundCurrency(simplifiedPreLimit),
+      simplifiedDeduction: roundCurrency(simplifiedDeduction),
+      actualPreLimit: roundCurrency(actualPreLimit),
+      actualDeduction: roundCurrency(actualDeduction),
+      recommendedMethod,
+      recommendedDeduction: roundCurrency(recommendedDeductionValue),
+      differenceBetweenMethods: roundCurrency(
+        Math.abs(actualDeduction - simplifiedDeduction)
+      ),
+      businessIncomeLimitHit,
+      unusedBusinessIncomeCapacity: roundCurrency(
+        Math.max(0, businessIncomeBeforeHomeOffice - recommendedDeductionValue)
+      )
+    },
+    details: {
+      qualificationWarning,
+      exclusiveUseAffirmed,
+      regularUseAffirmed
+    }
+  };
+}
+
 function monthlyPayment(principal, annualRate, termYears) {
   const p = clampNonNegative(principal);
   const n = Math.max(1, Math.round(clampNonNegative(termYears) * 12));

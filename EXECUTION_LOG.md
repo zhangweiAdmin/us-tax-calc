@@ -1247,3 +1247,99 @@ Format:
 - Action: Deployed favicon cache-busting fix to production and completed live validation.
 - Result: Deployment succeeded (`us-tax-calc.service=active`), homepage HTML now exposes versioned icon links (`/favicon.ico?v=20260602`) including `shortcut icon`, and icon endpoint returns HTTP `200` with `Cache-Control: public, max-age=300`.
 - Next: Commit and push this fix + execution logs to `origin/master`.
+
+## 2026-06-02 09:00:00 CST
+- Step: 41
+- Action: Chose the shared planning-memory + Home Office Deduction workflow as the most valuable missing tool.
+- Result: Scope confirmed for frontend, helper memory, navigation, and documentation updates.
+- Next: Implement the new page, wire memory between freelance/safe-harbor/home-office flows, and refresh cache-busting script versions.
+
+## 2026-06-02 22:57:30 CST
+- Step: 42
+- Action: Implemented the Home Office Deduction page, shared planner-memory helpers, navigation entry updates, and cache-busting script versions.
+- Result: New route, SVG artwork, and cross-page input persistence are wired into the site.
+- Next: Run syntax and runtime validation against the updated server and frontend.
+
+## 2026-06-02 22:57:30 CST
+- Step: 43
+- Action: Ran syntax checks on public/app.js and server/index.js.
+- Result: Both files parsed cleanly with node --check.
+- Next: Start the local server and smoke-test the new route and API.
+
+## 2026-06-02 22:57:30 CST
+- Step: 44
+- Action: Started the local server on port 3100 and tested /api/health, /home-office-deduction-calculator/, and /api/calculate/home-office.
+- Result: Health returned OK, the new page rendered with the expected title, and the home-office API returned a valid deduction payload.
+- Next: Verify the browser-side memory handoff from freelance estimates to Home Office and Safe Harbor inputs.
+
+## 2026-06-02 22:57:30 CST
+- Step: 45
+- Action: Simulated the browser-side planner-memory flow with a stub DOM and localStorage snapshot from a prior freelance estimate.
+- Result: Home Office business income auto-filled to 95000, Safe Harbor current tax auto-filled to 28150.66, and the memory hints updated as expected.
+- Next: Stop the local validation server and hand the finished changes back to the user.
+
+## 2026-06-02 22:57:30 CST
+- Step: 46
+- Action: Ran a syntax check on server/lib/taxMath.js after the shared Home Office calculation additions.
+- Result: The tax math module parsed cleanly.
+- Next: Final handoff to the user.
+
+## 2026-06-02 23:09:20 CST
+- Step: 47
+- Action: Moved Safe Harbor and Home Office Deduction into the primary calculator navigation on all calculator pages and removed the duplicate secondary entries.
+- Result: The five calculator routes now render as a single peer group in the main nav.
+- Next: Validate the live routes again after the navigation reshuffle.
+
+## 2026-06-02 23:09:20 CST
+- Step: 48
+- Action: Restarted the local server and smoke-tested all five calculator routes plus the Home Office page markup.
+- Result: All routes returned HTTP 200 and the Home Office page rendered the new five-item primary navigation.
+- Next: Final handoff to the user.
+
+## 2026-06-02 23:09:20 CST
+- Step: 49
+- Action: Started the primary-navigation cleanup requested by the user.
+- Result: Plan is to switch from equal-width grid buttons to content-width buttons and shorten the longest labels.
+- Next: Patch the shared nav styles and the primary nav labels across the five calculator pages.
+
+## 2026-06-02 23:09:20 CST
+- Step: 50
+- Action: Switched the primary nav container to content-width behavior and shortened the longest button labels.
+- Result: Primary calculator buttons should now size to text instead of equal-width columns.
+- Next: Validate the updated labels and page rendering.
+
+## 2026-06-02 23:09:20 CST
+- Step: 50
+- Action: Shortened the primary nav labels and changed the desktop layout to content-width buttons.
+- Result: The five calculator buttons should now size themselves by label length instead of equal-width columns.
+- Next: Validate rendered HTML and CSS assumptions on the local server.
+
+## 2026-06-02 23:09:20 CST
+- Step: 51
+- Action: Started the mobile primary-nav overflow fix by inspecting the shared nav implementation and the mobile CSS rules.
+- Result: Confirmed the mobile layout still uses a 3-column grid, which is why the calculator buttons wrap.
+- Next: Patch the nav script so overflow primary items move into the drawer, then tighten the mobile nav CSS.
+
+## 2026-06-02 23:53:36 CST
+- Step: 52
+- Action: Implemented mobile overflow handling in the shared nav script and switched the mobile primary nav from a wrapping grid to a single-row flex layout.
+- Result: The drawer now collects hidden primary links plus secondary links, and the mobile nav row no longer relies on wrapping.
+- Next: Validate the layout at narrow and very narrow mobile widths.
+
+## 2026-06-02 23:53:36 CST
+- Step: 53
+- Action: Verified the mobile nav with headless Chrome at 390px and 320px widths.
+- Result: At 390px, the five calculator buttons fit on one row and the menu button is visible; at 320px, the Home Office button collapses into the menu while the toggle remains visible.
+- Next: Finalize the change and report back with the validation summary.
+
+## 2026-06-02 23:53:36 CST
+- Step: 54
+- Action: Cleaned up the temporary Chrome test sessions after validation.
+- Result: No lingering headless validation processes remain.
+- Next: Final handoff to the user.
+
+## 2026-06-03 23:59:00 CST
+- Step: 55
+- Action: Prepared the release by verifying the updated JavaScript files with syntax checks and checking the local VPS deployment configuration.
+- Result: The code changes are ready to publish, but no `.vps.env` or `VPS_*` environment variables are present locally, so server deployment is blocked until the VPS host and password are provided.
+- Next: Commit the working tree and push it to the remote GitHub repository.

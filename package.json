@@ -1,7 +1,7 @@
 {
   "name": "us-tax-calculators",
   "version": "0.1.0",
-  "description": "US state-aware freelance tax, mortgage refinance, and multi-chain staking calculators",
+  "description": "US state-aware freelance tax, home office deduction, mortgage refinance, and multi-chain staking calculators",
   "type": "module",
   "scripts": {
     "dev": "node --watch server/index.js",

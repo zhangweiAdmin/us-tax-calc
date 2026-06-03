@@ -101,89 +101,46 @@
 
       <figure class="media-spot">
         <img
-          src="/media/freelance-tax-map.svg"
-          alt="Estimated-tax planning visual with calendar checkpoints and reserve tracking blocks."
+          src="/media/home-office-desk.svg"
+          alt="Home office workspace illustration with desk, floor plan, and comparison cards."
           loading="lazy"
           decoding="async"
         />
-        <figcaption>Visual note: safe-harbor planning works best when reviewed before each installment window.</figcaption>
+        <figcaption>Visual note: a dedicated workspace can change the deduction math more than the furniture does.</figcaption>
       </figure>
 
       <section class="guide-card">
-        <h3>Safe Harbor Planning In Plain Numbers</h3>
+        <h3>Home Office Planning Without Guesswork</h3>
         <p>
-          This page helps you estimate a safe-harbor payment target for quarterly estimated tax planning. It compares
-          current-year and prior-year rule thresholds and shows how much remains to be paid after your year-to-date
-          withholding and estimated payments.
+          This page compares the IRS simplified method with a rough actual-expense estimate for a dedicated workspace.
+          It is useful when you want a quick planning answer before sorting through the full stack of home bills and
+          receipts.
         </p>
         <p>
-          If you still need a baseline current-year tax estimate, run the
-          <a href="/">Freelance Tax Calculator</a> first, then use that output here.
+          If you already ran the freelance calculator, the business-income field can reuse the last net business income
+          automatically so both tools stay aligned on the same earnings picture.
         </p>
       </section>
 
-      <div class="grid safe-harbor-grid">
-        <form id="safeHarborForm" class="card form-card">
-          <h2>Quarterly Safe Harbor Calculator</h2>
-          <p class="card-note">Estimate a safe-harbor payment target to reduce underpayment-penalty risk.</p>
+      <div class="grid">
+        <form id="homeOfficeForm" class="card form-card">
+          <h2>Home Office Deduction Calculator</h2>
+          <p class="card-note">Compare simplified and actual-expense methods for a dedicated workspace.</p>
           <div class="form-grid">
             <div class="form-row form-row-2">
               <div class="field">
-                <label for="safeHarborFilingStatus">Filing Status</label>
-                <select id="safeHarborFilingStatus" name="safeHarborFilingStatus" required>
-                  <option value="single">Single</option>
-                  <option value="married_filing_jointly">Married Filing Jointly</option>
-                  <option value="married_filing_separately">Married Filing Separately</option>
-                  <option value="head_of_household">Head of Household</option>
-                </select>
+                <label for="officeSquareFeet">Office Square Footage</label>
+                <input id="officeSquareFeet" name="officeSquareFeet" type="number" min="0" step="1" value="120" required />
               </div>
               <div class="field">
-                <label for="safeHarborTaxYear">Tax Year</label>
-                <input id="safeHarborTaxYear" name="safeHarborTaxYear" type="number" min="2000" max="2100" step="1" />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="currentYearTotalTax">Current-Year Total Tax Estimate (USD)</label>
-              <input
-                id="currentYearTotalTax"
-                name="currentYearTotalTax"
-                type="number"
-                min="0"
-                step="100"
-                value="18000"
-                required
-              />
-              <p class="memory-note" id="safeHarborMemoryHint">
-                Tip: if you already ran the freelance calculator, this field can reuse that total tax automatically.
-              </p>
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="priorYearTotalTax">Prior-Year Total Tax (USD)</label>
-                <input id="priorYearTotalTax" name="priorYearTotalTax" type="number" min="0" step="100" value="16000" required />
-              </div>
-              <div class="field">
-                <label for="priorYearAgi">Prior-Year AGI (USD)</label>
-                <input id="priorYearAgi" name="priorYearAgi" type="number" min="0" step="100" value="120000" required />
-              </div>
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="field">
-                <label for="withholdingYtd">Withholding Paid YTD (USD)</label>
-                <input id="withholdingYtd" name="withholdingYtd" type="number" min="0" step="50" value="0" required />
-              </div>
-              <div class="field">
-                <label for="estimatedPaymentsYtd">Estimated Payments Paid YTD (USD)</label>
+                <label for="totalHomeSquareFeet">Total Home Square Footage</label>
                 <input
-                  id="estimatedPaymentsYtd"
-                  name="estimatedPaymentsYtd"
+                  id="totalHomeSquareFeet"
+                  name="totalHomeSquareFeet"
                   type="number"
                   min="0"
-                  step="50"
-                  value="0"
+                  step="1"
+                  value="1200"
                   required
                 />
               </div>
@@ -191,26 +148,26 @@
 
             <div class="form-row form-row-2">
               <div class="field">
-                <label for="expectedWithholdingRemaining">Expected Remaining Withholding (USD)</label>
+                <label for="annualHomeExpenses">Annual Home Expenses (USD)</label>
                 <input
-                  id="expectedWithholdingRemaining"
-                  name="expectedWithholdingRemaining"
+                  id="annualHomeExpenses"
+                  name="annualHomeExpenses"
                   type="number"
                   min="0"
-                  step="50"
-                  value="0"
+                  step="100"
+                  value="18000"
                   required
                 />
               </div>
               <div class="field">
-                <label for="expectedEstimatedPaymentsRemaining">Expected Remaining Estimated Payments (USD)</label>
+                <label for="directOfficeExpenses">Direct Office Expenses (USD)</label>
                 <input
-                  id="expectedEstimatedPaymentsRemaining"
-                  name="expectedEstimatedPaymentsRemaining"
+                  id="directOfficeExpenses"
+                  name="directOfficeExpenses"
                   type="number"
                   min="0"
-                  step="50"
-                  value="0"
+                  step="100"
+                  value="500"
                   required
                 />
               </div>
@@ -218,58 +175,91 @@
 
             <div class="form-row form-row-2">
               <div class="field">
-                <label for="safeHarborInstallmentsElapsed">Installments Already Due</label>
-                <select id="safeHarborInstallmentsElapsed" name="safeHarborInstallmentsElapsed" required>
-                  <option value="0">0 (before Q1 due date)</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
+                <label for="annualDepreciation">Annual Depreciation (USD)</label>
+                <input
+                  id="annualDepreciation"
+                  name="annualDepreciation"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value="0"
+                  required
+                />
               </div>
               <div class="field">
-                <label for="safeHarborAsOfDate">As-Of Date</label>
-                <input id="safeHarborAsOfDate" name="safeHarborAsOfDate" type="date" />
+                <label for="businessIncomeBeforeHomeOffice">
+                  Business Income Before Home Office Deduction (USD)
+                </label>
+                <input
+                  id="businessIncomeBeforeHomeOffice"
+                  name="businessIncomeBeforeHomeOffice"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value="80000"
+                  required
+                />
+                <p class="memory-note" id="homeOfficeMemoryHint">
+                  Tip: if you already ran the freelance calculator, this field can reuse the net business income from
+                  that run.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="field checkbox-field">
+                <label class="checkbox-control" for="exclusiveUseAffirmed">
+                  <input id="exclusiveUseAffirmed" name="exclusiveUseAffirmed" type="checkbox" checked />
+                  <span>The space is used exclusively for business</span>
+                </label>
+                <p class="field-help">Exclusive use is one of the baseline home-office tests.</p>
+              </div>
+              <div class="field checkbox-field">
+                <label class="checkbox-control" for="regularUseAffirmed">
+                  <input id="regularUseAffirmed" name="regularUseAffirmed" type="checkbox" checked />
+                  <span>The space is used regularly for business</span>
+                </label>
+                <p class="field-help">If the room is mixed-use or occasional, the deduction can get weaker fast.</p>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="primary-btn">Calculate Safe Harbor</button>
+          <button type="submit" class="primary-btn">Calculate Deduction</button>
         </form>
 
-        <article class="card result-card" id="safeHarborResult">
-          <h2>Safe Harbor Projection</h2>
-          <p class="placeholder">Submit inputs to view your safe-harbor target and payment pacing.</p>
+        <article class="card result-card" id="homeOfficeResult">
+          <h2>Deduction Projection</h2>
+          <p class="placeholder">Submit inputs to compare the simplified and actual-expense methods.</p>
         </article>
       </div>
 
       <section class="faq-card">
-        <h3>Safe Harbor FAQ</h3>
+        <h3>Home Office FAQ</h3>
         <dl>
-          <dt>What does this safe harbor calculator estimate?</dt>
+          <dt>What does this calculator estimate?</dt>
           <dd>
-            It estimates a required annual safe-harbor payment and splits the remaining amount across installments left
-            in the year.
+            It compares the IRS simplified method with an actual-expense estimate so you can see which approach gives
+            you the larger planning deduction.
           </dd>
-          <dt>How does it choose between current-year and prior-year rules?</dt>
+          <dt>Do I have to use the space exclusively for business?</dt>
           <dd>
-            The model compares 90% of current-year estimated tax against the prior-year rule (100% or 110% based on
-            AGI threshold) and uses the smaller target.
+            Exclusive and regular use are generally required for the home-office deduction. If the space is also used
+            for personal activities, the deduction may not qualify.
           </dd>
-          <dt>Do withholding and estimated payments both count?</dt>
+          <dt>Can renters use this calculator?</dt>
           <dd>
-            Yes. Withholding paid year-to-date and estimated-tax payments are both credited toward the safe-harbor
-            target in the projection.
+            Yes. Renters can enter their allocable home expenses and direct office expenses to estimate the deductible
+            portion of a dedicated workspace.
           </dd>
-          <dt>Does this replace Form 2210 or CPA advice?</dt>
+          <dt>What is included in the simplified method?</dt>
           <dd>
-            No. This is a planning tool. Final penalty calculations can depend on annualized methods, special taxpayer
-            rules, and filing-specific adjustments.
+            The simplified method uses $5 per square foot up to 300 square feet, and direct office expenses can still
+            be considered separately.
           </dd>
-          <dt>Can I use the freelance estimator output here?</dt>
+          <dt>Is the deduction limited by business income?</dt>
           <dd>
-            Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in
-            one planning workflow.
+            Yes. This estimate caps the deduction at the business income you entered before the home-office deduction,
+            which helps avoid unrealistic outputs.
           </dd>
         </dl>
       </section>
@@ -278,8 +268,8 @@
         <h3>Compliance Notes</h3>
         <ul>
           <li>This calculator provides planning estimates only and is not tax advice.</li>
-          <li>Safe-harbor rules can vary by taxpayer profile; verify final filing positions with a licensed CPA.</li>
-          <li>State estimated-tax obligations may differ from federal patterns.</li>
+          <li>Exclusive and regular use are important baseline tests for the home-office deduction.</li>
+          <li>Before filing, verify the final deduction rules with IRS guidance or a licensed tax professional.</li>
         </ul>
       </section>
     </main>

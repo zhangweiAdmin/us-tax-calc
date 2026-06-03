@@ -12,6 +12,8 @@ const percent2 = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2
 });
 
+const PLANNER_MEMORY_KEY = "us-tax-calc.planner-memory.v1";
+
 function formatCurrency(value) {
   return currency.format(Number(value || 0));
 }
@@ -23,6 +25,129 @@ function formatPercent(value) {
 function asNumber(value) {
   const n = Number(value);
   return Number.isFinite(n) ? n : 0;
+}
+
+function readPlannerMemory() {
+  try {
+    const raw = window.localStorage.getItem(PLANNER_MEMORY_KEY);
+    if (!raw) return {};
+
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePlannerMemory(patch) {
+  try {
+    const current = readPlannerMemory();
+    const next = {
+      ...current,
+      ...patch,
+      updatedAt: new Date().toISOString()
+    };
+    window.localStorage.setItem(PLANNER_MEMORY_KEY, JSON.stringify(next));
+    return next;
+  } catch {
+    return null;
+  }
+}
+
+function canAdoptRememberedInput(input) {
+  if (!input) return false;
+
+  const currentValue = String(input.value || "").trim();
+  const defaultValue = String(input.defaultValue || "").trim();
+
+  if (!currentValue) return true;
+  if (currentValue === defaultValue) return true;
+
+  if (/^0+(?:\.0+)?$/.test(currentValue) && /^0+(?:\.0+)?$/.test(defaultValue || "0")) {
+    return true;
+  }
+
+  return false;
+}
+
+function maybeApplyRememberedNumber(input, value) {
+  if (!input || !Number.isFinite(Number(value))) return false;
+  if (!canAdoptRememberedInput(input)) return false;
+
+  input.value = String(Math.round(Number(value) * 100) / 100);
+  return true;
+}
+
+function maybeApplyRememberedChoice(select, value) {
+  if (!select || !value) return false;
+
+  const currentValue = String(select.value || "").trim();
+  const defaultValue = String(select.options?.[0]?.value || "").trim();
+  if (currentValue && currentValue !== defaultValue) return false;
+
+  select.value = value;
+  return true;
+}
+
+function setMemoryHint(elementId, text) {
+  const el = document.getElementById(elementId);
+  if (!el || !text) return;
+  el.textContent = text;
+}
+
+function rememberFreelanceResult(payload, result) {
+  const breakdown = result?.breakdown || {};
+  if (!Number.isFinite(Number(breakdown.totalEstimatedTax))) return false;
+
+  const saved = writePlannerMemory({
+    freelance: {
+      input: {
+        stateCode: String(payload?.stateCode || "").toUpperCase(),
+        filingStatus: String(payload?.filingStatus || "single"),
+        grossIncome: asNumber(payload?.grossIncome),
+        businessExpenses: asNumber(payload?.businessExpenses),
+        otherDeductions: asNumber(payload?.otherDeductions)
+      },
+      result: {
+        stateCode: String(payload?.stateCode || "").toUpperCase(),
+        filingStatus: String(payload?.filingStatus || "single"),
+        netBusinessIncome: asNumber(breakdown.netBusinessIncome),
+        totalEstimatedTax: asNumber(breakdown.totalEstimatedTax),
+        quarterlyEstimatedPayment: asNumber(breakdown.quarterlyEstimatedPayment)
+      }
+    }
+  });
+
+  return Boolean(saved);
+}
+
+function applyPlannerMemoryToForms() {
+  const memory = readPlannerMemory();
+  const freelance = memory?.freelance?.result || null;
+  if (!freelance) return;
+
+  const safeHarborCurrentTax = $("#currentYearTotalTax");
+  if (safeHarborCurrentTax && maybeApplyRememberedNumber(safeHarborCurrentTax, freelance.totalEstimatedTax)) {
+    setMemoryHint(
+      "safeHarborMemoryHint",
+      `Loaded from your last freelance estimate: ${formatCurrency(freelance.totalEstimatedTax)} total tax.`
+    );
+  }
+
+  const safeHarborStatus = $("#safeHarborFilingStatus");
+  if (safeHarborStatus) {
+    maybeApplyRememberedChoice(safeHarborStatus, freelance.filingStatus);
+  }
+
+  const homeOfficeIncome = $("#businessIncomeBeforeHomeOffice");
+  if (homeOfficeIncome && maybeApplyRememberedNumber(homeOfficeIncome, freelance.netBusinessIncome)) {
+    setMemoryHint(
+      "homeOfficeMemoryHint",
+      `Loaded from your last freelance estimate: ${formatCurrency(
+        freelance.netBusinessIncome
+      )} net business income.`
+    );
+  }
 }
 
 const FALLBACK_STATES = [
@@ -399,6 +524,70 @@ function renderSafeHarborResult(result) {
   `;
 }
 
+function renderHomeOfficeResult(result) {
+  const el = $("#homeOfficeResult");
+  if (!el) return;
+
+  const b = result.breakdown || {};
+  const assumptions = (result.assumptions || [])
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  const qualificationWarning = result.details?.qualificationWarning
+    ? `<p class="result-note"><strong>Use check:</strong> ${result.details.qualificationWarning}</p>`
+    : "";
+
+  const limitNote = b.businessIncomeLimitHit
+    ? `<p class="result-note"><strong>Income cap:</strong> This estimate is capped by the business income entered before the home-office deduction.</p>`
+    : "";
+
+  el.innerHTML = `
+    <h2>Deduction Projection</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <p class="kpi-label">Recommended Method</p>
+        <p class="kpi-value">${b.recommendedMethod || "N/A"}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Recommended Deduction</p>
+        <p class="kpi-value good">${formatCurrency(b.recommendedDeduction)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Simplified Method</p>
+        <p class="kpi-value">${formatCurrency(b.simplifiedDeduction)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Actual Expense Method</p>
+        <p class="kpi-value">${formatCurrency(b.actualDeduction)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Business Use</p>
+        <p class="kpi-value">${formatPercent(b.businessUsePercent)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Difference Between Methods</p>
+        <p class="kpi-value">${formatCurrency(b.differenceBetweenMethods)}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Income Cap Hit</p>
+        <p class="kpi-value">${b.businessIncomeLimitHit ? "Yes" : "No"}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Unused Income Capacity</p>
+        <p class="kpi-value">${formatCurrency(b.unusedBusinessIncomeCapacity)}</p>
+      </div>
+    </div>
+    ${qualificationWarning}
+    ${limitNote}
+    <p class="result-note">
+      <strong>Use tests:</strong> ${result.details?.exclusiveUseAffirmed ? "exclusive use affirmed" : "exclusive use not affirmed"} |
+      ${result.details?.regularUseAffirmed ? "regular use affirmed" : "regular use not affirmed"}
+    </p>
+    <h3 class="result-subtitle">Assumptions</h3>
+    <ul class="result-list">${assumptions}</ul>
+  `;
+}
+
 function renderMortgageResult(result) {
   const el = $("#mortgageResult");
   const b = result.breakdown;
@@ -598,6 +787,13 @@ function bindForms() {
       try {
         const result = await postJson("/api/calculate/freelance", payload);
         renderFreelanceResult(result);
+        const memorySaved = rememberFreelanceResult(payload, result);
+        if (memorySaved) {
+          $("#freelanceResult").insertAdjacentHTML(
+            "beforeend",
+            '<p class="result-note"><strong>Saved locally:</strong> The net business income and total tax can be reused by the Safe Harbor and Home Office pages.</p>'
+          );
+        }
         syncSafeHarborWithFreelanceEstimate(payload, result);
       } catch (error) {
         $("#freelanceResult").innerHTML = `<h2>Estimated Result</h2><p class="placeholder">${error.message}</p>`;
@@ -700,6 +896,36 @@ function bindForms() {
       }
     });
   }
+
+  const homeOfficeForm = $("#homeOfficeForm");
+  if (homeOfficeForm) {
+    homeOfficeForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const payload = {
+        officeSquareFeet: asNumber($("#officeSquareFeet").value),
+        totalHomeSquareFeet: asNumber($("#totalHomeSquareFeet").value),
+        annualHomeExpenses: asNumber($("#annualHomeExpenses").value),
+        directOfficeExpenses: asNumber($("#directOfficeExpenses").value),
+        annualDepreciation: asNumber($("#annualDepreciation").value),
+        businessIncomeBeforeHomeOffice: asNumber($("#businessIncomeBeforeHomeOffice").value),
+        exclusiveUseAffirmed: $("#exclusiveUseAffirmed").checked,
+        regularUseAffirmed: $("#regularUseAffirmed").checked
+      };
+
+      renderLoading("homeOfficeResult", "Deduction Projection", "Comparing home-office methods...");
+      setSubmitLoading("homeOfficeForm", true, "Calculating...");
+
+      try {
+        const result = await postJson("/api/calculate/home-office", payload);
+        renderHomeOfficeResult(result);
+      } catch (error) {
+        $("#homeOfficeResult").innerHTML = `<h2>Deduction Projection</h2><p class="placeholder">${error.message}</p>`;
+      } finally {
+        setSubmitLoading("homeOfficeForm", false, "");
+      }
+    });
+  }
 }
 
 async function init() {
@@ -707,6 +933,7 @@ async function init() {
   bindTabNavigation();
   applySafeHarborDefaults();
   bindForms();
+  applyPlannerMemoryToForms();
 
   await loadStates();
 

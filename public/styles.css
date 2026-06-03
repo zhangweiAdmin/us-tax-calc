@@ -148,8 +148,17 @@ h1 {
   padding: 8px 12px;
 }
 
+.site-nav-list-primary {
+  justify-content: center;
+}
+
 .site-nav-list-primary .site-nav-link {
+  width: auto;
+  justify-content: center;
+  text-align: center;
   white-space: nowrap;
+  padding-inline: 12px;
+  font-size: 0.92rem;
 }
 
 .nav-label-short {
@@ -454,6 +463,44 @@ body.nav-drawer-open {
   font-size: 0.82rem;
 }
 
+.memory-note {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #d9d3c5;
+  border-radius: 12px;
+  background: #f7fbf9;
+  color: #334056;
+  font-size: 0.88rem;
+}
+
+.checkbox-field {
+  justify-content: flex-start;
+}
+
+.checkbox-control {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  color: #2e3442;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.checkbox-control input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  flex: 0 0 auto;
+  accent-color: var(--primary);
+}
+
+.checkbox-control span {
+  display: inline-block;
+}
+
 .field label {
   margin-top: 0;
 }
@@ -700,12 +747,18 @@ select:focus {
     justify-content: space-between;
     gap: 8px;
     padding: 8px;
+    width: 100%;
+    min-width: 0;
   }
 
   .site-nav.site-nav-has-more .site-nav-list-primary {
-    flex: 1 1 auto;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex: 1 1 0;
+    width: 0;
+    max-width: calc(100% - 42px);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow: hidden;
     padding: 0;
     gap: 6px;
     margin: 0;
@@ -713,11 +766,12 @@ select:focus {
   }
 
   .site-nav.site-nav-has-more .site-nav-list-primary li {
+    flex: 0 0 auto;
     min-width: 0;
   }
 
   .site-nav.site-nav-has-more .site-nav-list-primary .site-nav-link {
-    width: 100%;
+    width: auto;
     justify-content: center;
     text-align: center;
     padding: 6px 4px;

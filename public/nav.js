@@ -1,6 +1,9 @@
 let drawerUi = null;
 let activeDrawerTrigger = null;
 let drawerHideTimer = null;
+let navOverflowSyncRaf = null;
+
+const NAV_MOBILE_BREAKPOINT = 980;
 
 function normalizeNavPathname(pathname) {
   const raw = String(pathname || "/").trim() || "/";
@@ -25,6 +28,10 @@ function isNavPathActive(currentPath, targetPath) {
   return false;
 }
 
+function isMobileNavMode() {
+  return window.matchMedia(`(max-width: ${NAV_MOBILE_BREAKPOINT}px)`).matches;
+}
+
 function applyNavActiveState() {
   const currentPath = normalizeNavPathname(window.location.pathname);
   const links = Array.from(document.querySelectorAll(".site-nav-link[href^='/']"));
@@ -42,12 +49,20 @@ function applyNavActiveState() {
   }
 }
 
-function collectLinksFromList(list) {
-  const anchors = Array.from(list.querySelectorAll("a[href^='/']"));
+function collectLinksFromList(list, { hiddenOnly = false } = {}) {
+  if (!list) return [];
+
   const seen = new Set();
   const links = [];
+  const items = Array.from(list.children);
 
-  for (const anchor of anchors) {
+  for (const item of items) {
+    if (!(item instanceof HTMLElement)) continue;
+    if (hiddenOnly && !item.hidden) continue;
+
+    const anchor = item.querySelector("a[href^='/']");
+    if (!anchor) continue;
+
     const href = anchor.getAttribute("href");
     const text = String(anchor.textContent || "").trim();
     const path = navPathnameFromHref(href);
@@ -59,6 +74,79 @@ function collectLinksFromList(list) {
   }
 
   return links;
+}
+
+function collectDrawerLinks(nav) {
+  const primaryList = nav.querySelector(".site-nav-list-primary");
+  const secondaryList = nav.querySelector(".site-nav-list-secondary");
+  const links = [];
+  const seen = new Set();
+
+  const appendLinks = (items) => {
+    for (const item of items) {
+      if (seen.has(item.path)) continue;
+      seen.add(item.path);
+      links.push(item);
+    }
+  };
+
+  appendLinks(collectLinksFromList(primaryList, { hiddenOnly: true }));
+  appendLinks(collectLinksFromList(secondaryList));
+
+  return links;
+}
+
+function syncPrimaryNavOverflow(nav) {
+  const primaryList = nav.querySelector(".site-nav-list-primary");
+  const toggle = nav.querySelector(".nav-mobile-toggle");
+  if (!primaryList || !toggle) return;
+
+  const items = Array.from(primaryList.children).filter((item) => item instanceof HTMLElement);
+  for (const item of items) {
+    item.hidden = false;
+  }
+
+  if (!isMobileNavMode()) return;
+
+  const availableWidth = primaryList.getBoundingClientRect().width;
+  if (availableWidth <= 0 || items.length === 0) return;
+
+  const gapValue = getComputedStyle(primaryList).columnGap || getComputedStyle(primaryList).gap || "0";
+  const gap = Number.parseFloat(gapValue) || 0;
+  let usedWidth = 0;
+  let visibleCount = 0;
+
+  for (const item of items) {
+    const itemWidth = item.getBoundingClientRect().width;
+    const nextWidth = visibleCount === 0 ? itemWidth : usedWidth + gap + itemWidth;
+
+    if (nextWidth <= availableWidth + 0.5) {
+      usedWidth = nextWidth;
+      visibleCount += 1;
+    } else {
+      item.hidden = true;
+    }
+  }
+
+  if (visibleCount === 0 && items.length > 0) {
+    items[0].hidden = false;
+  }
+}
+
+function syncAllPrimaryNavOverflow() {
+  const navs = Array.from(document.querySelectorAll(".site-nav.site-nav-has-more"));
+  for (const nav of navs) {
+    syncPrimaryNavOverflow(nav);
+  }
+}
+
+function schedulePrimaryNavOverflowSync() {
+  if (navOverflowSyncRaf !== null) return;
+
+  navOverflowSyncRaf = window.requestAnimationFrame(() => {
+    navOverflowSyncRaf = null;
+    syncAllPrimaryNavOverflow();
+  });
 }
 
 function ensureDrawerUi() {
@@ -141,9 +229,10 @@ function closeDrawer() {
   }, 220);
 }
 
-function openDrawer(trigger, titleText, links) {
+function openDrawer(trigger, nav, titleText) {
   const { overlay, drawer, title, list } = ensureDrawerUi();
   const currentPath = normalizeNavPathname(window.location.pathname);
+  const links = collectDrawerLinks(nav);
 
   if (drawerHideTimer) {
     window.clearTimeout(drawerHideTimer);
@@ -199,8 +288,8 @@ function initSiteNavMoreDrawer() {
     const secondaryList = nav.querySelector(".site-nav-list-secondary");
     if (!primaryList || !secondaryList) continue;
 
-    const links = collectLinksFromList(secondaryList);
-    if (links.length === 0) continue;
+    const drawerLinks = collectLinksFromList(secondaryList);
+    if (drawerLinks.length === 0) continue;
 
     nav.classList.add("site-nav-has-more");
 
@@ -219,9 +308,27 @@ function initSiteNavMoreDrawer() {
 
     const label = nav.getAttribute("aria-label") || "More pages";
     toggle.addEventListener("click", () => {
-      openDrawer(toggle, label, links);
+      openDrawer(toggle, nav, label);
     });
   }
+
+  window.addEventListener("resize", schedulePrimaryNavOverflowSync);
+  window.addEventListener("orientationchange", schedulePrimaryNavOverflowSync);
+  window.addEventListener(
+    "load",
+    () => {
+      schedulePrimaryNavOverflowSync();
+    },
+    { once: true }
+  );
+
+  if (document.fonts?.ready?.then) {
+    document.fonts.ready.then(() => {
+      schedulePrimaryNavOverflowSync();
+    });
+  }
+
+  schedulePrimaryNavOverflowSync();
 }
 
 function initNav() {

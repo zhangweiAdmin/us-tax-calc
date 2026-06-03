@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   calculateFreelanceTaxes,
+  calculateHomeOfficeDeduction,
   calculateQuarterlySafeHarbor,
   calculateMortgageRefinance,
   calculateStakingYield
@@ -22,9 +23,10 @@ const PORT = Number(process.env.PORT || 3000);
 const ADMIN_REFRESH_TOKEN = process.env.ADMIN_REFRESH_TOKEN || null;
 const ADSENSE_CLIENT_ID = normalizeAdSenseClientId(process.env.ADSENSE_CLIENT_ID);
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL);
-const SITE_TITLE = "US Calculator Hub | Freelance Tax, Safe Harbor, Refinance, Staking";
+const SITE_TITLE =
+  "US Calculator Hub | Freelance Tax, Home Office, Safe Harbor, Refinance, Staking";
 const SITE_DESCRIPTION =
-  "State-aware freelance tax estimator with quarterly safe harbor, mortgage refinance, and multi-chain staking calculators.";
+  "State-aware freelance tax estimator with home office deduction, quarterly safe harbor, mortgage refinance, and multi-chain staking calculators.";
 const PAGE_CATALOG = [
   {
     path: "/",
@@ -106,6 +108,45 @@ const PAGE_CATALOG = [
         question: "Can I use the freelance estimator output here?",
         answer:
           "Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in one planning workflow."
+      }
+    ]
+  },
+  {
+    path: "/home-office-deduction-calculator",
+    templatePath: "home-office-deduction-calculator/index.html",
+    initialTab: "freelance",
+    title: "Home Office Deduction Calculator | US Calculator Hub",
+    description:
+      "Compare the simplified home-office deduction method against an actual-expense estimate for a dedicated workspace.",
+    heading: "Home Office Deduction Calculator",
+    subhead:
+      "Estimate the deductible value of a dedicated workspace by comparing the IRS simplified method with an actual-expense estimate.",
+    about: [{ "@type": "Thing", name: "Home Office Deduction Calculator" }],
+    faqs: [
+      {
+        question: "What does this calculator estimate?",
+        answer:
+          "It compares the IRS simplified method with an actual-expense estimate so you can see which approach produces the larger planning deduction."
+      },
+      {
+        question: "Do I have to use the space exclusively for business?",
+        answer:
+          "Exclusive and regular use are generally required for the home-office deduction. If the space is also used for personal activities, the deduction may not qualify."
+      },
+      {
+        question: "Can renters use this calculator?",
+        answer:
+          "Yes. Renters can enter their allocable home expenses and direct office expenses to estimate the deductible portion of a dedicated workspace."
+      },
+      {
+        question: "What is included in the simplified method?",
+        answer:
+          "The simplified method uses $5 per square foot up to 300 square feet, and direct office expenses can still be considered separately."
+      },
+      {
+        question: "Is the deduction limited by business income?",
+        answer:
+          "Yes. This estimate caps the deduction at the business income you entered before the home-office deduction, which helps avoid unrealistic outputs."
       }
     ]
   },
@@ -193,7 +234,9 @@ const DEFAULT_PAGE = PAGE_BY_PATH.get("/");
 const REDIRECT_PATHS = new Map([
   ["/freelance-tax-calculator", "/"],
   ["/quarterly-safe-harbor-calculator", "/safe-harbor-calculator"],
-  ["/safe-harbor-tax-calculator", "/safe-harbor-calculator"]
+  ["/safe-harbor-tax-calculator", "/safe-harbor-calculator"],
+  ["/home-office-calculator", "/home-office-deduction-calculator"],
+  ["/home-office-tax-calculator", "/home-office-deduction-calculator"]
 ]);
 const ARTICLE_MANIFEST = loadArticleManifest();
 const ARTICLE_HUB_LASTMOD = resolveLatestArticleDate(ARTICLE_MANIFEST);
@@ -671,6 +714,13 @@ async function handleApi(req, res, urlObj) {
   if (req.method === "POST" && pathname === "/api/calculate/safe-harbor") {
     const input = await parseJsonBody(req);
     const result = calculateQuarterlySafeHarbor(input);
+    sendJson(res, 200, result);
+    return;
+  }
+
+  if (req.method === "POST" && pathname === "/api/calculate/home-office") {
+    const input = await parseJsonBody(req);
+    const result = calculateHomeOfficeDeduction(input);
     sendJson(res, 200, result);
     return;
   }

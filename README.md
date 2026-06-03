@@ -1,8 +1,9 @@
-# US Calculator Hub (Freelance Tax + Refinance + Staking)
+# US Calculator Hub (Freelance Tax + Home Office + Refinance + Staking)
 
 一个面向美国用户使用习惯的多计算器网站，包含：
 
 - `Freelance Tax Calculator`（可切换州，估算联邦税 + 自雇税 + 州税）
+- `Home Office Deduction Calculator`（比较简化法和实际费用法的扣除估算）
 - `Quarterly Safe Harbor Calculator`（基于当年税额估算 + 上年税额规则，估算季度预缴安全港目标）
 - `Mortgage Refinance Calculator`（月供变化、利息变化、回本周期）
 - `Crypto Multi-Chain Staking Calculator`（多链配置、复利收益）
@@ -89,6 +90,7 @@ POST /api/admin/refresh-taxes?token=your_token
 - `GET /api/states`
 - `GET /api/tax-data?state=CA`
 - `POST /api/calculate/freelance`
+- `POST /api/calculate/home-office`
 - `POST /api/calculate/safe-harbor`
 - `POST /api/calculate/refinance`
 - `POST /api/calculate/staking`
