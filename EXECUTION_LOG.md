@@ -1403,3 +1403,39 @@ Format:
 - Action: Verified the mobile nav behavior at 390px and 320px widths.
 - Result: At 390px the menu button stays hidden and the secondary links remain visible; at 320px the menu button appears and the secondary links collapse into the drawer.
 - Next: Commit the change, push it, and deploy the updated site.
+
+## 2026-06-03 01:34:00 CST
+- Step: 66
+- Action: Started deploying the mobile overflow-only menu behavior to the VPS and remote repository.
+- Result: The change is committed and pushed, so the live site can now be refreshed with the new nav logic.
+- Next: Run the deployment script and verify the public site afterward.
+
+## 2026-06-03 01:38:00 CST
+- Step: 67
+- Action: Started live-site verification of the overflow-only mobile menu behavior.
+- Result: The VPS restart completed successfully, so the public site is ready for browser-level layout checks.
+- Next: Confirm the live HTTPS page hides the menu button at 390px and shows it at 320px.
+
+## 2026-06-03 01:37:00 CST
+- Step: 67
+- Action: Started live-site verification for the overflow-only mobile menu behavior.
+- Result: The VPS restart completed successfully, so the final check is the rendered behavior on the public HTTPS site.
+- Next: Inspect the live page at a roomy mobile width and a narrow mobile width.
+
+## 2026-06-03 09:32:43 CST
+- Step: 68
+- Action: Verified the live site HTML and published `nav.js` source on `https://zlxjy.com/`.
+- Result: The public site is serving the latest shared navigation markup and the overflow-aware drawer script.
+- Next: Confirm the responsive behavior on the live page at 390px and 320px widths.
+
+## 2026-06-03 09:32:43 CST
+- Step: 69
+- Action: Ran live browser checks on `https://zlxjy.com/` at 390px and 320px widths.
+- Result: At 390px, all five calculator buttons fit and the menu button stays hidden; at 320px, the last calculator item hides into the drawer, the secondary links collapse, and the menu button appears.
+- Next: Share the final verification result back to the user.
+
+## 2026-06-07 20:16:18 CST
+- Step: 70
+- Action: Reviewed the current working tree before deployment and confirmed the `data/tax-rates.json` change was only a scheduled refresh metadata update.
+- Result: No functional regression was found in the tax data file; it can be bundled with the release safely.
+- Next: Deploy the article and Safe Harbor updates to the VPS and then push the commit to the remote repository.

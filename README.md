@@ -131,7 +131,7 @@ node scripts/generate-articles.mjs
 执行后会生成：
 
 - `public/articles/index.html`（文章列表页）
-- `public/articles/<slug>/index.html`（20 篇文章页）
+- `public/articles/<slug>/index.html`（文章页）
 - `public/articles/manifest.json`（标题、slug、字数清单）
 
 ## 5.2 AdSense 审核代码（仅站点验证）

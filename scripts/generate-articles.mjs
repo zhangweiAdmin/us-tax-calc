@@ -1302,6 +1302,35 @@ const articles = [
     ]
   },
   {
+    slug: "safe-harbor-in-real-life-10-years-finance",
+    title: "Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes",
+    description:
+      "A plain-English Safe Harbor guide from the perspective of a finance professional who has spent a decade helping people keep quarterly taxes predictable.",
+    bodyPath: "content/articles/safe-harbor-in-real-life-10-years-finance.html",
+    faq: [
+      {
+        q: "Is Safe Harbor the same as paying less tax?",
+        a: "No. It is a penalty-prevention rule. You can still owe tax when you file your return, even if you met the Safe Harbor target during the year."
+      },
+      {
+        q: "Does withholding count toward Safe Harbor?",
+        a: "Yes. Withholding and estimated tax payments both count. That is one reason people with W-2 income sometimes have more flexibility than they realize."
+      },
+      {
+        q: "If my income dropped this year, should I ignore the prior-year rule?",
+        a: "Not automatically. A lower current-year estimate may be valid, but I would compare it with the prior-year floor before deciding. In a noisy year, the prior-year rule can still be the cleaner anchor."
+      },
+      {
+        q: "Can I still owe money in April if I used Safe Harbor?",
+        a: "Yes. Safe Harbor is about reducing underpayment-penalty risk. It does not guarantee a zero balance due. A small balance is still possible, and that is normal."
+      },
+      {
+        q: "Should I still worry about state estimated taxes?",
+        a: "Absolutely. Federal Safe Harbor does not cancel state rules. I treat state estimates as a separate task, even when I review them on the same day."
+      }
+    ]
+  },
+  {
     slug: "freelancer-safe-harbor-quarterly-tax-playbook",
     title: "A Freelance Safe Harbor Playbook: How To Pay Quarterly Taxes Without Guessing Every Deadline",
     description:
@@ -1472,6 +1501,11 @@ function renderArticle(article, index, publishMeta) {
   const voiceAngle = pickFrom(VOICE_ANGLES, seed);
   const references = getReferences(topic, seed);
 
+  let bodyHtml;
+  if (article.bodyHtml) {
+    bodyHtml = `<section class="article-body-card">\n${article.bodyHtml}\n</section>`;
+  } else {
+
   const introTemplates = [
     "This guide is for {audience}. {scenario}",
     "If you are part of {audience}, this pattern will feel familiar: {scenario}",
@@ -1620,7 +1654,7 @@ function renderArticle(article, index, publishMeta) {
     )
     .join("\n");
 
-  const bodyHtml = `
+  bodyHtml = `
     <section class="article-body-card">
       ${paragraph(introParagraph)}
       ${paragraph(positioningParagraph)}
@@ -1714,6 +1748,7 @@ function renderArticle(article, index, publishMeta) {
       ${paragraph(pickFrom(editorialTemplates, seed, 14))}
     </section>
   `;
+  }
 
   const wordCount = textWordCount(bodyHtml);
   if (wordCount < 800) {
@@ -1857,14 +1892,17 @@ async function run() {
   await fs.rm(OUT_DIR, { recursive: true, force: true });
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  const selectedArticles = [...articles.slice(0, 20), articles[articles.length - 1]];
+  const selectedArticles = [...articles];
   const manifest = [];
 
   for (const [index, article] of selectedArticles.entries()) {
     const outDir = path.join(OUT_DIR, article.slug);
     await fs.mkdir(outDir, { recursive: true });
     const publishMeta = getArticlePublishMeta(index);
-    const { html, wordCount } = renderArticle(article, index, publishMeta);
+    const articleForRender = article.bodyPath
+      ? { ...article, bodyHtml: await fs.readFile(path.join(ROOT, article.bodyPath), "utf8") }
+      : article;
+    const { html, wordCount } = renderArticle(articleForRender, index, publishMeta);
     await fs.writeFile(path.join(outDir, "index.html"), html, "utf8");
     manifest.push({
       slug: article.slug,
