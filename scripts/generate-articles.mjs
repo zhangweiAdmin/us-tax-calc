@@ -1302,6 +1302,35 @@ const articles = [
     ]
   },
   {
+    slug: "tax-money-already-has-a-job",
+    title: "Why I Treat Tax Money Like It Already Has a Job",
+    description:
+      "A finance-minded look at why quarterly taxes get easier when you split cash into jobs, protect the reserve, and use the calculator as a check rather than a guess.",
+    bodyPath: "content/articles/tax-money-already-has-a-job.html",
+    faq: [
+      {
+        q: "Do I need a separate bank account for tax money?",
+        a: "Not strictly, but a separate account makes the habit much easier to keep. What matters most is that tax money stops looking spendable the minute it is reserved."
+      },
+      {
+        q: "How much should I set aside from each payment?",
+        a: "There is no single number that fits everyone. Your reserve depends on income level, filing status, deductions, state taxes, and how much withholding you already have. I usually start conservatively and refine from actual results."
+      },
+      {
+        q: "Does Safe Harbor mean I can ignore current-year tax planning?",
+        a: "No. Safe Harbor is a floor, not a full plan. It helps reduce underpayment penalty risk, but it does not replace a current-year review of income, withholding, and state obligations."
+      },
+      {
+        q: "What if my income is uneven all year?",
+        a: "Use a transfer rule tied to each payment instead of waiting for quarterly panic. Uneven income is exactly where bucket discipline matters most."
+      },
+      {
+        q: "Should state taxes live in the same bucket as federal taxes?",
+        a: "You can keep them in one reserve if you track them separately, but I prefer to think about them separately. That keeps the federal estimate from hiding a state problem."
+      }
+    ]
+  },
+  {
     slug: "safe-harbor-in-real-life-10-years-finance",
     title: "Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes",
     description:
