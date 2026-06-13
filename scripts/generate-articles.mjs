@@ -1110,6 +1110,7 @@ const articles = [
     title: "State Tax Differences for Mobile Freelancers: Planning Before It Gets Messy",
     description:
       "A practical primer for freelancers who move states or work remotely across state lines.",
+    publishOffsetDays: 12,
     audience: "freelancers with cross-state exposure",
     scenario:
       "A consultant moved mid-year and billed clients in multiple states but tracked income in one undifferentiated category.",
@@ -1159,6 +1160,7 @@ const articles = [
     title: "Quarterly Estimate Strategy with a Safe-Harbor Mindset for Freelancers",
     description:
       "How to use safe-harbor planning mindset to reduce penalty risk while preserving cash flow flexibility.",
+    publishOffsetDays: 10,
     audience: "freelancers optimizing quarterly estimate strategy",
     scenario:
       "A freelancer is unsure whether to pay aggressively every quarter or preserve liquidity and reconcile later.",
@@ -1208,6 +1210,7 @@ const articles = [
     title: "The Calculator Inputs That Change Your Tax Result the Most",
     description:
       "A practical walkthrough of the few calculator inputs that usually move freelance tax estimates the most.",
+    publishOffsetDays: 8,
     audience: "users of freelance tax calculators",
     scenario:
       "A user updates random fields repeatedly but cannot tell which inputs actually matter to the final estimate.",
@@ -1257,6 +1260,7 @@ const articles = [
     title: "A Calm Year-End Closeout for Freelancers: What To Do Before December Turns Into Panic",
     description:
       "A practical year-end checklist for freelancers to reduce filing-season chaos and improve tax confidence.",
+    publishOffsetDays: 6,
     audience: "freelancers preparing for year-end close",
     scenario:
       "A freelancer reaches December with decent revenue but unclear records, uncertain reserves, and no closeout plan.",
@@ -1306,6 +1310,7 @@ const articles = [
     title: "Why I Treat Tax Money Like It Already Has a Job",
     description:
       "A finance-minded look at why quarterly taxes get easier when you split cash into jobs, protect the reserve, and use the calculator as a check rather than a guess.",
+    publishOffsetDays: 0,
     bodyPath: "content/articles/tax-money-already-has-a-job.html",
     faq: [
       {
@@ -1335,6 +1340,7 @@ const articles = [
     title: "Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes",
     description:
       "A plain-English Safe Harbor guide from the perspective of a finance professional who has spent a decade helping people keep quarterly taxes predictable.",
+    publishOffsetDays: 2,
     bodyPath: "content/articles/safe-harbor-in-real-life-10-years-finance.html",
     faq: [
       {
@@ -1364,6 +1370,7 @@ const articles = [
     title: "A Freelance Safe Harbor Playbook: How To Pay Quarterly Taxes Without Guessing Every Deadline",
     description:
       "A practical Safe Harbor planning guide for freelancers who want calmer quarterly tax payments and fewer penalty surprises.",
+    publishOffsetDays: 4,
     audience: "freelancers and independent contractors with uneven income",
     scenario:
       "A web developer has one strong quarter, one slow quarter, and a late client payment that lands in December. Every due date feels like a brand-new puzzle, and by September she is no longer sure whether she should follow current-year estimates or lean on the prior-year safe harbor. She is not lazy, and she is not avoiding the issue. She simply does not have a written process that tells her what to do when income swings.",
@@ -1504,7 +1511,17 @@ function renderFaqSchema(article) {
 
 function getArticlePublishMeta(index) {
   let date;
-  if (index < LEGACY_SCHEDULED_ARTICLE_COUNT) {
+  const article = articles[index];
+  if (article?.publishOffsetDays !== undefined) {
+    const now = new Date();
+    date = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() - article.publishOffsetDays
+      )
+    );
+  } else if (index < LEGACY_SCHEDULED_ARTICLE_COUNT) {
     const dayOffset = -Math.floor(index / 2);
     date = new Date(
       Date.UTC(

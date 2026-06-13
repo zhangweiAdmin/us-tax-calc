@@ -1,37 +1,5 @@
 [
   {
-    "slug": "state-tax-differences-for-mobile-freelancers",
-    "title": "State Tax Differences for Mobile Freelancers: Planning Before It Gets Messy",
-    "description": "A practical primer for freelancers who move states or work remotely across state lines.",
-    "wordCount": 1077,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
-  },
-  {
-    "slug": "freelancer-quarterly-estimates-safe-harbor-mindset",
-    "title": "Quarterly Estimate Strategy with a Safe-Harbor Mindset for Freelancers",
-    "description": "How to use safe-harbor planning mindset to reduce penalty risk while preserving cash flow flexibility.",
-    "wordCount": 1046,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
-  },
-  {
-    "slug": "calculator-inputs-that-change-tax-results-most",
-    "title": "The Calculator Inputs That Change Your Tax Result the Most",
-    "description": "A practical walkthrough of the few calculator inputs that usually move freelance tax estimates the most.",
-    "wordCount": 1064,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
-  },
-  {
-    "slug": "calm-year-end-closeout-for-freelancers",
-    "title": "A Calm Year-End Closeout for Freelancers: What To Do Before December Turns Into Panic",
-    "description": "A practical year-end checklist for freelancers to reduce filing-season chaos and improve tax confidence.",
-    "wordCount": 1055,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
-  },
-  {
     "slug": "tax-money-already-has-a-job",
     "title": "Why I Treat Tax Money Like It Already Has a Job",
     "description": "A finance-minded look at why quarterly taxes get easier when you split cash into jobs, protect the reserve, and use the calculator as a check rather than a guess.",
@@ -44,16 +12,48 @@
     "title": "Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes",
     "description": "A plain-English Safe Harbor guide from the perspective of a finance professional who has spent a decade helping people keep quarterly taxes predictable.",
     "wordCount": 2179,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
+    "publishedAt": "2026-06-11",
+    "publishedLabel": "June 11, 2026"
   },
   {
     "slug": "freelancer-safe-harbor-quarterly-tax-playbook",
     "title": "A Freelance Safe Harbor Playbook: How To Pay Quarterly Taxes Without Guessing Every Deadline",
     "description": "A practical Safe Harbor planning guide for freelancers who want calmer quarterly tax payments and fewer penalty surprises.",
     "wordCount": 1806,
-    "publishedAt": "2026-06-13",
-    "publishedLabel": "June 13, 2026"
+    "publishedAt": "2026-06-09",
+    "publishedLabel": "June 9, 2026"
+  },
+  {
+    "slug": "calm-year-end-closeout-for-freelancers",
+    "title": "A Calm Year-End Closeout for Freelancers: What To Do Before December Turns Into Panic",
+    "description": "A practical year-end checklist for freelancers to reduce filing-season chaos and improve tax confidence.",
+    "wordCount": 1055,
+    "publishedAt": "2026-06-07",
+    "publishedLabel": "June 7, 2026"
+  },
+  {
+    "slug": "calculator-inputs-that-change-tax-results-most",
+    "title": "The Calculator Inputs That Change Your Tax Result the Most",
+    "description": "A practical walkthrough of the few calculator inputs that usually move freelance tax estimates the most.",
+    "wordCount": 1064,
+    "publishedAt": "2026-06-05",
+    "publishedLabel": "June 5, 2026"
+  },
+  {
+    "slug": "freelancer-quarterly-estimates-safe-harbor-mindset",
+    "title": "Quarterly Estimate Strategy with a Safe-Harbor Mindset for Freelancers",
+    "description": "How to use safe-harbor planning mindset to reduce penalty risk while preserving cash flow flexibility.",
+    "wordCount": 1046,
+    "publishedAt": "2026-06-03",
+    "publishedLabel": "June 3, 2026"
+  },
+  {
+    "slug": "state-tax-differences-for-mobile-freelancers",
+    "title": "State Tax Differences for Mobile Freelancers: Planning Before It Gets Messy",
+    "description": "A practical primer for freelancers who move states or work remotely across state lines.",
+    "wordCount": 1077,
+    "publishedAt": "2026-06-01",
+    "publishedLabel": "June 1, 2026"
   },
   {
     "slug": "quarterly-tax-mistakes-freelancers-make",
