@@ -1306,6 +1306,40 @@ const articles = [
     ]
   },
   {
+    slug: "staking-apr-apy-freelance-tax-guide",
+    title: "Staking APR, APY, and Freelance Taxes: How To Estimate the Whole Year Without Guessing",
+    description:
+      "A practical guide for readers searching staking APR, staking APY, freelance income calculators, and safe harbor rules in one place.",
+    publishOffsetDays: 0,
+    bodyPath: "content/articles/staking-apr-apy-freelance-tax-guide.html",
+    faq: [
+      {
+        q: "What is APR in crypto staking?",
+        a: "APR is the annual percentage rate before compounding assumptions. It is the base number I use when I want a more conservative view of staking returns."
+      },
+      {
+        q: "What is APY in crypto staking?",
+        a: "APY is the annual percentage yield. It assumes compounding, so it can look better than APR when rewards are regularly reinvested."
+      },
+      {
+        q: "How do I report staking rewards on taxes?",
+        a: "Track the date, quantity, and fair market value of the reward when you receive or control it. The IRS treats digital assets as property and says digital asset income is taxable."
+      },
+      {
+        q: "Do staking rewards affect my freelance taxes calculator result?",
+        a: "Yes. If you have staking rewards and freelance income in the same year, you should combine them before estimating your tax bill. Otherwise the freelance calculator can understate the year."
+      },
+      {
+        q: "How do safe harbor rules for estimated taxes work if I have freelance income and staking income?",
+        a: "You still compare your total expected tax against the safe harbor thresholds. Safe harbor is a payment-floor rule, so both income streams should be included in the estimate."
+      },
+      {
+        q: "Should I use the freelance income calculator or the freelance taxes calculator first?",
+        a: "I start with the income calculation, then I move to the tax calculation, then I fold in staking income and compare the result with safe harbor."
+      }
+    ]
+  },
+  {
     slug: "tax-money-already-has-a-job",
     title: "Why I Treat Tax Money Like It Already Has a Job",
     description:
