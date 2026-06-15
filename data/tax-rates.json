@@ -1,9 +1,9 @@
 {
   "metadata": {
     "taxYear": 2026,
-    "refreshedAt": "2026-06-03T09:00:25.755Z",
-    "nextRefreshAt": "2026-06-04T06:00:00.000Z",
-    "refreshReason": "daily-scheduled-refresh",
+    "refreshedAt": "2026-06-15T14:57:16.279Z",
+    "nextRefreshAt": "2026-06-16T06:00:00.000Z",
+    "refreshReason": "startup-stale-data",
     "sourceStatus": {
       "federal": "live",
       "states": "live"

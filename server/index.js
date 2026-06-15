@@ -26,7 +26,7 @@ const SITE_URL = normalizeSiteUrl(process.env.SITE_URL);
 const SITE_TITLE =
   "US Calculator Hub | Freelance Tax, Home Office, Safe Harbor, Refinance, Staking";
 const SITE_DESCRIPTION =
-  "State-aware freelance tax estimator with home office deduction, quarterly safe harbor, mortgage refinance, and multi-chain staking calculators.";
+  "Practical calculators and plain-English guides for freelance tax, home office, safe harbor, mortgage refinance, and multi-chain staking planning.";
 const PAGE_CATALOG = [
   {
     path: "/",
@@ -34,41 +34,36 @@ const PAGE_CATALOG = [
     initialTab: "freelance",
     title: "Freelance Tax Calculator by State | US Calculator Hub",
     description:
-      "Estimate federal income tax, self-employment tax, and state income tax for U.S. freelancers by filing status and state.",
+      "Estimate federal income tax, self-employment tax, and state income tax for U.S. freelance income, then carry the result into home-office and safe-harbor planning.",
     heading: "Freelance Tax Calculator",
     subhead:
-      "Estimate federal + self-employment + state taxes for U.S. freelance income using state-specific assumptions.",
+      "Estimate a freelance tax baseline with state-aware assumptions, then use the result for home-office and quarterly payment planning.",
     about: [{ "@type": "Thing", name: "Freelance Tax Calculator" }],
     faqs: [
       {
-        question: "Should I include non-freelance W-2 income in this tool?",
+        question: "Should I include W-2 wages in this tool?",
         answer:
-          "No. This page is meant for freelance business income planning. If you also have W-2 wages, use this as a partial estimate and combine it with a full tax projection before filing."
+          "No. Treat this as the freelance side of the return. If you also have W-2 wages, combine this estimate with a fuller return view before you decide on quarterly payments."
       },
       {
-        question: "Why does self-employment tax look high?",
+        question: "Why does self-employment tax move the result so much?",
         answer:
-          "Self-employment tax covers both the employee and employer portions of Social Security and Medicare, so it is usually higher than first-time freelancers expect."
+          "Because it covers both the employer and employee side of Social Security and Medicare. That is why the first rough guess often feels too low."
       },
       {
-        question: "Can I rely on this for quarterly estimates?",
+        question: "Can I rely on this for quarterly planning?",
         answer:
-          "Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account for credits, prior-year safe harbor rules, and any other household income."
+          "Yes, as a planning baseline. I would still check credits, household withholding, and safe-harbor rules before sending money."
       },
       {
-        question: "What does the Safe Harbor calculator add?",
+        question: "What should I do after a large client payment?",
         answer:
-          "It compares the 90% current-year rule against the 100% or 110% prior-year rule, then estimates how much still needs to be paid across the remaining installments."
-      },
-      {
-        question: "How often are tax assumptions refreshed?",
-        answer:
-          "The backend refreshes source tax tables regularly and stores update metadata. If live fetching fails, the app falls back to the last successful dataset to avoid downtime."
+          "Re-run the calculator. One large invoice can move the reserve target enough that last month's number is no longer the one to trust."
       },
       {
         question: "Which filing statuses are supported?",
         answer:
-          "Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan to keep bracket assumptions aligned."
+          "Single, Married Filing Jointly, and Head of Household. Pick the one you actually expect to file, not the one that looks convenient in the moment."
       }
     ]
   },
@@ -78,36 +73,41 @@ const PAGE_CATALOG = [
     initialTab: "freelance",
     title: "Quarterly Safe Harbor Calculator | Estimated Tax Planning",
     description:
-      "Estimate safe-harbor quarterly payment targets using 90% current-year tax or 100%/110% prior-year rules with installment pacing.",
+      "Estimate the smaller of the current-year 90% rule and the prior-year 100% or 110% rule, then pace the remaining quarterly payments.",
     heading: "Quarterly Safe Harbor Calculator",
     subhead:
-      "Plan estimated-tax payments with a safe-harbor target so underpayment-penalty risk is easier to manage throughout the year.",
+      "Use prior-year tax, current-year projections, and payments already made to see how much is left before the next deadline.",
     about: [{ "@type": "Thing", name: "Quarterly Safe Harbor Calculator" }],
     faqs: [
       {
-        question: "What does this safe harbor calculator estimate?",
+        question: "What does the calculator actually target?",
         answer:
-          "It estimates a required annual safe-harbor payment and splits the remaining amount across installments left in the year."
+          "It compares 90% of the current-year estimate with the prior-year floor and uses the smaller requirement."
       },
       {
-        question: "How does it choose between current-year and prior-year rules?",
+        question: "Does withholding count the same as estimated payments?",
         answer:
-          "The model compares 90% of current-year estimated tax against the prior-year rule (100% or 110% based on AGI threshold) and uses the smaller target."
+          "Yes. Both move you toward the target, which is why W-2 withholding can change the answer more than people expect."
       },
       {
-        question: "Do withholding and estimated payments both count?",
+        question: "When does the 110% prior-year rule matter?",
         answer:
-          "Yes. Withholding paid year-to-date and estimated-tax payments are both credited toward the safe-harbor target in the projection."
+          "It matters when prior-year AGI crossed the IRS threshold. In that case the prior-year floor is higher than the ordinary 100% version."
       },
       {
-        question: "Does this replace Form 2210 or CPA advice?",
+        question: "Can I use this if my income swings a lot?",
         answer:
-          "No. This is a planning tool. Final penalty calculations can depend on annualized methods, special taxpayer rules, and filing-specific adjustments."
+          "Yes, but treat it as a floor. If the year is lumpy, I would still sanity-check the result with a current-year forecast."
       },
       {
-        question: "Can I use the freelance estimator output here?",
+        question: "Does this replace Form 2210?",
         answer:
-          "Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in one planning workflow."
+          "No. It is a planning tool. Annualized-income methods, filing details, and state rules can change the final answer."
+      },
+      {
+        question: "What if I already paid through withholding?",
+        answer:
+          "Include it. Household withholding often gets overlooked and can materially reduce the remaining gap."
       }
     ]
   },
@@ -117,36 +117,36 @@ const PAGE_CATALOG = [
     initialTab: "freelance",
     title: "Home Office Deduction Calculator | US Calculator Hub",
     description:
-      "Compare the simplified home-office deduction method against an actual-expense estimate for a dedicated workspace.",
+      "Compare the simplified home-office method with an actual-expense estimate for a dedicated workspace used regularly and exclusively for business.",
     heading: "Home Office Deduction Calculator",
     subhead:
-      "Estimate the deductible value of a dedicated workspace by comparing the IRS simplified method with an actual-expense estimate.",
+      "See whether the simplified rule or a real-expense allocation gives you the cleaner planning answer for your workspace.",
     about: [{ "@type": "Thing", name: "Home Office Deduction Calculator" }],
     faqs: [
       {
-        question: "What does this calculator estimate?",
+        question: "When does the simplified method make the most sense?",
         answer:
-          "It compares the IRS simplified method with an actual-expense estimate so you can see which approach produces the larger planning deduction."
+          "When you want a fast planning number and the office is clearly a separate space. It is simple, readable, and easy to defend."
       },
       {
-        question: "Do I have to use the space exclusively for business?",
+        question: "Can a kitchen table or spare bedroom corner qualify?",
         answer:
-          "Exclusive and regular use are generally required for the home-office deduction. If the space is also used for personal activities, the deduction may not qualify."
+          "Usually not if the space is also used for personal purposes. Exclusive use is the part people most often gloss over."
+      },
+      {
+        question: "What records matter for the actual-expense method?",
+        answer:
+          "Keep the home-expense totals, a square-foot allocation, and direct office expenses. The cleaner the records, the easier the calculation is to trust."
       },
       {
         question: "Can renters use this calculator?",
         answer:
-          "Yes. Renters can enter their allocable home expenses and direct office expenses to estimate the deductible portion of a dedicated workspace."
+          "Yes. The housing type does not change the planning logic; the real question is whether the workspace meets the home-office tests."
       },
       {
-        question: "What is included in the simplified method?",
+        question: "What if the deduction is bigger than my business income?",
         answer:
-          "The simplified method uses $5 per square foot up to 300 square feet, and direct office expenses can still be considered separately."
-      },
-      {
-        question: "Is the deduction limited by business income?",
-        answer:
-          "Yes. This estimate caps the deduction at the business income you entered before the home-office deduction, which helps avoid unrealistic outputs."
+          "Do not assume the larger number will survive filing unchanged. The calculator caps the result at the income you entered so the output stays realistic."
       }
     ]
   },
@@ -156,36 +156,41 @@ const PAGE_CATALOG = [
     initialTab: "mortgage",
     title: "Mortgage Refinance Calculator | US Calculator Hub",
     description:
-      "Compare mortgage refinance scenarios with monthly payment changes, total interest impact, and breakeven timing.",
+      "Compare refinance payment savings, closing-cost payback, and lifetime interest impact before you lock a new loan.",
     heading: "Mortgage Refinance Calculator",
     subhead:
-      "Compare current and new loan terms to evaluate monthly savings, lifetime interest, and breakeven timing.",
+      "Run a rate-first and a fee-first scenario side by side so the refinance decision lines up with your actual holding period.",
     about: [{ "@type": "Thing", name: "Mortgage Refinance Calculator" }],
     faqs: [
       {
-        question: "What does breakeven month actually represent?",
+        question: "Why can my monthly payment fall while total interest rises?",
         answer:
-          "It is the number of months needed for monthly savings to recover the upfront closing cost. If you sell before that point, the refinance usually does not pay for itself."
+          "Because a longer term can spread the debt out even when the rate improves. Lower monthly pressure does not always mean lower lifetime cost."
       },
       {
-        question: "Why can my monthly payment drop but lifetime interest still rise?",
+        question: "What is the point of breakeven month?",
         answer:
-          "Extending the loan term can lower monthly payment while increasing total interest paid over time. Always evaluate payment comfort and lifetime cost together."
+          "It tells you how long it takes for monthly savings to recover closing costs. If you expect to move sooner than that, the refinance gets harder to justify."
       },
       {
-        question: "Should I refinance if rates are only slightly lower?",
+        question: "Do points count in this calculator?",
         answer:
-          "Sometimes yes, sometimes no. Small rate improvements can still work if balance is large and fees are controlled, but you should test realistic closing-cost assumptions."
+          "Yes, if you include them in the upfront cost input. That is the cleanest way to compare a points-heavy offer with a no-points offer."
       },
       {
-        question: "Does the calculator include points and prepaid items?",
+        question: "Should I compare more than one lender?",
         answer:
-          "Only if you include them in the closing-cost input. The tool treats closing costs as an upfront cash amount for breakeven and lifetime comparison."
+          "Yes. A single quote can hide fees or tradeoffs that show up only after you line it up against another Loan Estimate."
       },
       {
-        question: "Can I use this for adjustable-rate mortgages?",
+        question: "Can I use this for an ARM?",
         answer:
-          "Not directly. The model assumes fixed rates for both current and new loans, so ARM scenarios need a more detailed projection with future rate paths."
+          "Not directly. The current model assumes fixed-rate inputs on both sides, so an ARM needs a more detailed path."
+      },
+      {
+        question: "What if I plan to sell within a few years?",
+        answer:
+          "Then the breakeven date matters even more. A slightly better rate can be the wrong move if you will not stay long enough to earn it back."
       }
     ]
   },
@@ -195,36 +200,41 @@ const PAGE_CATALOG = [
     initialTab: "staking",
     title: "Crypto Multi-Chain Staking Calculator | US Calculator Hub",
     description:
-      "Estimate annual compounded staking yield across multiple crypto chains using weighted allocations and APY assumptions.",
+      "Estimate portfolio staking rewards across multiple chains with APY, compounding frequency, and allocation weights while keeping price risk separate.",
     heading: "Crypto Multi-Chain Staking Calculator",
     subhead:
-      "Model portfolio-level staking performance by splitting principal across chains with customizable APY and allocations.",
+      "Model reward-side return scenarios by chain so APY assumptions, lockups, and validator risk stay visible.",
     about: [{ "@type": "Thing", name: "Crypto Staking Calculator" }],
     faqs: [
       {
-        question: "What if my allocations do not add up to 100%?",
+        question: "Is APY guaranteed?",
         answer:
-          "The calculator normalizes the weights internally. That means each chain still receives a proportional share of capital even when your raw percentages are under or over 100."
+          "No. It is an assumption, not a promise. Real staking outcomes can change with validator performance, network conditions, and protocol rules."
       },
       {
-        question: "Is APY treated as guaranteed?",
+        question: "Why does compounding frequency matter?",
         answer:
-          "No. APY is an input assumption. Real outcomes can deviate because validator performance, protocol policy, and network conditions change over time."
+          "Because compounding changes the shape of the return. If you cannot restake as often as the model assumes, the real result will be lower."
       },
       {
-        question: "Does this include token price movement?",
+        question: "Does the calculator include token price movement?",
         answer:
-          "No. Results are reward-side estimates in token terms. USD performance can be very different depending on market price changes."
+          "No. It keeps reward math separate from market risk, which is usually the cleaner way to think about staking."
       },
       {
-        question: "How should I choose compounding frequency?",
+        question: "What risk does the math miss?",
         answer:
-          "Match it to your likely claim-and-restake behavior. Using a very high compounding frequency can overstate outcomes if you cannot execute that frequently in practice."
+          "Slashing, custody risk, unbonding delays, validator commission changes, and other operational issues that do not show up in a simple APY formula."
       },
       {
-        question: "Can this model slashing risk?",
+        question: "How should I use this result?",
         answer:
-          "Not directly. Slashing is a downside risk outside this formula, so apply a conservative haircut to APY assumptions when planning higher-risk validator sets."
+          "Use it as a reward-side planning number. Before deploying capital, check the validator and the liquidity constraints separately."
+      },
+      {
+        question: "What if my allocation percentages do not add to 100?",
+        answer:
+          "The calculator normalizes them, but I would still fix the numbers so your written plan matches your intent."
       }
     ]
   }

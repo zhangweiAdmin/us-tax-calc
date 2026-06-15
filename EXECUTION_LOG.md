@@ -1439,3 +1439,39 @@ Format:
 - Action: Reviewed the current working tree before deployment and confirmed the `data/tax-rates.json` change was only a scheduled refresh metadata update.
 - Result: No functional regression was found in the tax data file; it can be bundled with the release safely.
 - Next: Deploy the article and Safe Harbor updates to the VPS and then push the commit to the remote repository.
+
+## 2026-06-07 20:18:06 CST
+- Step: 71
+- Action: Deployed the current commit to the VPS and verified the live HTTPS health endpoint plus the new Safe Harbor article and article index.
+- Result: The service restarted successfully, `https://zlxjy.com/api/health` returned healthy, and the new article is visible on both the article page and the article index.
+- Next: Hand off the deployment result to the user.
+
+## 2026-06-15 22:43:45 CST
+- Step: 72
+- Action: Re-checked official IRS and CFPB sources for safe-harbor, home-office, staking, and refinance wording before rewriting page copy.
+- Result: Current source anchors confirmed for 90%/100%/110% estimated-tax rules, home-office simplified method, digital asset tax treatment, and mortgage points/closing-cost tradeoffs.
+- Next: Rewrite the calculator pages and trust pages to reduce template repetition and strengthen human-sounding detail.
+
+## 2026-06-15 22:56:19 CST
+- Step: 73
+- Action: Rewrote calculator page copy and trust pages to reduce template repetition, add scenario-specific detail, and strengthen source/author signals.
+- Result: Homepage, Safe Harbor, Home Office, Mortgage Refinance, Crypto Staking, About, Authors, Editorial Policy, Contact, Privacy, and Terms were updated.
+- Next: Run validation on the updated server/html files and inspect the live rendering locally.
+
+## 2026-06-15 23:03:16 CST
+- Step: 74
+- Action: Validated the rewritten pages against the local server and confirmed the new content is rendered in the live app output.
+- Result: The updated homepage and trust pages now show the new scenario-based sections, reference links, and non-template FAQ wording.
+- Next: If requested, deploy this revision to the VPS and push the commit to the remote repository.
+
+## 2026-06-15 23:27:00 CST
+- Step: 75
+- Action: Started deployment using the known VPS target and the existing one-click deploy script.
+- Result: Local workspace is ready to rsync to the live host; deployment has not been executed yet.
+- Next: Run the deploy script against 97.64.82.143 and verify the public health check.
+
+## 2026-06-15 23:27:51 CST
+- Step: 76
+- Action: Completed VPS deployment and verified the public HTTPS site and health endpoint after restart.
+- Result: us-tax-calc.service is active, https://zlxjy.com/api/health returns OK JSON, and the homepage shows the rewritten scenario-based content.
+- Next: Commit the updated files and push them to the remote GitHub repository.

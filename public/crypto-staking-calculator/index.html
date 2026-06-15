@@ -109,15 +109,34 @@
       </figure>
 
       <section class="guide-card">
-        <h3>Model Staking Outcomes With Conservative Assumptions</h3>
+        <h3>How I Think About Staking Returns</h3>
         <p>
-          This route is dedicated to multi-chain staking analysis. It separates allocation logic from freelance tax or
-          mortgage topics so you can evaluate APY assumptions, compounding frequency, and chain weights with fewer
-          distractions.
+          I use this page when I want a reward-side estimate without mixing in token price swings. That separation
+          matters because a staking position can look healthy in reward terms and still feel very different in dollar
+          terms if the market moves.
         </p>
         <p>
-          The annual gain output is a reward-side model. It does not include token price volatility, slashing events,
-          or custody failures, so treat it as scenario planning input rather than guaranteed return.
+          The most useful thing about the calculator is not the biggest APY number. It is the way it forces me to
+          compare chains on the same basis before I decide where capital should sit.
+        </p>
+        <h3>What I Check First</h3>
+        <ul>
+          <li>Validator quality and fee structure.</li>
+          <li>Whether I can actually compound as often as the model assumes.</li>
+          <li>Whether the unstaking delay would matter if I needed liquidity faster than expected.</li>
+        </ul>
+      </section>
+
+      <section class="guide-card">
+        <h3>Scenario Notes Worth Writing Down</h3>
+        <p>
+          A chain with a slightly lower headline rate can still be the better choice if the validator is more stable
+          and the operational friction is lighter. That kind of tradeoff is easy to miss if the only thing you look at
+          is the annual percentage.
+        </p>
+        <p>
+          I also like to write down the exact compounding schedule I assume. If I cannot realistically claim rewards
+          that often, the number belongs in the optimistic column, not the base case.
         </p>
       </section>
 
@@ -191,30 +210,34 @@
       <section class="faq-card">
         <h3>Crypto Staking FAQ</h3>
         <dl>
-          <dt>What if my allocations do not add up to 100%?</dt>
+          <dt>Is APY guaranteed?</dt>
           <dd>
-            The calculator normalizes the weights internally. That means each chain still receives a proportional share
-            of capital even when your raw percentages are under or over 100.
+            No. It is an assumption, not a promise. Real staking outcomes can change with validator performance,
+            network conditions, and protocol rules.
           </dd>
-          <dt>Is APY treated as guaranteed?</dt>
+          <dt>Why does compounding frequency matter?</dt>
           <dd>
-            No. APY is an input assumption. Real outcomes can deviate because validator performance, protocol policy,
-            and network conditions change over time.
+            Because compounding changes the shape of the return. If you cannot restake as often as the model assumes,
+            the real result will be lower.
           </dd>
-          <dt>Does this include token price movement?</dt>
+          <dt>Does the calculator include token price movement?</dt>
           <dd>
-            No. Results are reward-side estimates in token terms. USD performance can be very different depending on
-            market price changes.
+            No. It keeps reward math separate from market risk, which is usually the cleaner way to think about
+            staking.
           </dd>
-          <dt>How should I choose compounding frequency?</dt>
+          <dt>What risk does the math miss?</dt>
           <dd>
-            Match it to your likely claim-and-restake behavior. Using a very high compounding frequency can overstate
-            outcomes if you cannot execute that frequently in practice.
+            Slashing, custody risk, unbonding delays, validator commission changes, and other operational issues that
+            do not show up in a simple APY formula.
           </dd>
-          <dt>Can this model slashing risk?</dt>
+          <dt>How should I use this result?</dt>
           <dd>
-            Not directly. Slashing is a downside risk outside this formula, so apply a conservative haircut to APY
-            assumptions when planning higher-risk validator sets.
+            Use it as a reward-side planning number. Before deploying capital, check the validator and the liquidity
+            constraints separately.
+          </dd>
+          <dt>What if my allocation percentages do not add to 100?</dt>
+          <dd>
+            The calculator normalizes them, but I would still fix the numbers so your written plan matches your intent.
           </dd>
         </dl>
       </section>
@@ -225,6 +248,11 @@
           <li>Always evaluate protocol risk and custody risk separately from APY math.</li>
           <li>For U.S. reporting decisions, validate with IRS guidance and qualified advice.</li>
         </ul>
+        <div class="compliance-links">
+          <a href="https://www.irs.gov/businesses/small-businesses-self-employed/digital-assets" target="_blank" rel="noopener noreferrer">IRS Digital Assets</a>
+          <a href="https://www.irs.gov/individuals/international-taxpayers/frequently-asked-questions-on-virtual-currency-transactions" target="_blank" rel="noopener noreferrer">IRS Virtual Currency FAQ</a>
+          <a href="https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/understand_risks_of_virtual_currency.html" target="_blank" rel="noopener noreferrer">CFTC Virtual Currency Risk</a>
+        </div>
       </section>
     </main>
 

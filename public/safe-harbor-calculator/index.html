@@ -110,21 +110,39 @@
       </figure>
 
       <section class="guide-card">
-        <h3>Safe Harbor Planning In Plain Numbers</h3>
+        <h3>How I Actually Use Safe Harbor</h3>
         <p>
-          This page helps you estimate a safe-harbor payment target for quarterly estimated tax planning. It compares
-          current-year and prior-year rule thresholds and shows how much remains to be paid after your year-to-date
-          withholding and estimated payments.
+          This page is the checkpoint I use when the year gets noisy. I do not start with the most optimistic number.
+          I start with the amount already paid, the current-year forecast, and the prior-year floor so the next move is
+          based on facts rather than stress.
         </p>
         <p>
-          If you still need a baseline current-year tax estimate, run the
-          <a href="/">Freelance Tax Calculator</a> first, then use that output here.
+          When the year is steady, the current-year path is often fine. When the year is choppy, I lean on the prior-
+          year floor as the calmer number and then split the remaining gap across the installments left.
+        </p>
+        <h3>What I Check Before Sending A Payment</h3>
+        <ul>
+          <li>Whether withholding already covered more than I remembered.</li>
+          <li>Whether the prior-year AGI pushes the 100% floor into the 110% version.</li>
+          <li>Whether any state payment still needs its own separate treatment.</li>
+        </ul>
+        <p>
+          If you need the current-year tax baseline first, run the
+          <a href="/">Freelance Tax Calculator</a> and bring that result back here.
+        </p>
+      </section>
+
+      <section class="guide-card">
+        <h3>Representative Scenario</h3>
+        <p>
+          A freelancer with a strong first half and a slower second half may think the next payment is tiny or huge
+          depending on which month they are looking at. The calculator is useful because it turns that moving target
+          into one fixed gap. That gap is the number you can actually budget around.
         </p>
         <p>
-          Related reading:
-          <a href="/articles/safe-harbor-in-real-life-10-years-finance">
-            Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes
-          </a>
+          If there is a big W-2 withholding amount already in the year, the answer often changes faster than expected.
+          That is one reason I prefer to include every payment source before I decide whether more estimated tax is
+          still needed.
         </p>
       </section>
 
@@ -252,30 +270,33 @@
       <section class="faq-card">
         <h3>Safe Harbor FAQ</h3>
         <dl>
-          <dt>What does this safe harbor calculator estimate?</dt>
+          <dt>What does the calculator actually target?</dt>
           <dd>
-            It estimates a required annual safe-harbor payment and splits the remaining amount across installments left
-            in the year.
+            It compares 90% of the current-year estimate with the prior-year floor and uses the smaller requirement.
           </dd>
-          <dt>How does it choose between current-year and prior-year rules?</dt>
+          <dt>Does withholding count the same as estimated payments?</dt>
           <dd>
-            The model compares 90% of current-year estimated tax against the prior-year rule (100% or 110% based on
-            AGI threshold) and uses the smaller target.
+            Yes. Both move you toward the target, which is why W-2 withholding can change the answer more than people
+            expect.
           </dd>
-          <dt>Do withholding and estimated payments both count?</dt>
+          <dt>When does the 110% prior-year rule matter?</dt>
           <dd>
-            Yes. Withholding paid year-to-date and estimated-tax payments are both credited toward the safe-harbor
-            target in the projection.
+            It matters when prior-year AGI crossed the IRS threshold. In that case the prior-year floor is higher than
+            the ordinary 100% version.
           </dd>
-          <dt>Does this replace Form 2210 or CPA advice?</dt>
+          <dt>Can I use this if my income swings a lot?</dt>
           <dd>
-            No. This is a planning tool. Final penalty calculations can depend on annualized methods, special taxpayer
-            rules, and filing-specific adjustments.
+            Yes, but treat it as a floor. If the year is lumpy, I would still sanity-check the result with a
+            current-year forecast.
           </dd>
-          <dt>Can I use the freelance estimator output here?</dt>
+          <dt>Does this replace Form 2210?</dt>
           <dd>
-            Yes. The freelance calculator can provide the current-year tax estimate input so both tools stay aligned in
-            one planning workflow.
+            No. It is a planning tool. Annualized-income methods, filing details, and state rules can change the final
+            answer.
+          </dd>
+          <dt>What if I already paid through withholding?</dt>
+          <dd>
+            Include it. Household withholding often gets overlooked and can materially reduce the remaining gap.
           </dd>
         </dl>
       </section>
@@ -287,6 +308,11 @@
           <li>Safe-harbor rules can vary by taxpayer profile; verify final filing positions with a licensed CPA.</li>
           <li>State estimated-tax obligations may differ from federal patterns.</li>
         </ul>
+        <div class="compliance-links">
+          <a href="https://www.irs.gov/faqs/estimated-tax" target="_blank" rel="noopener noreferrer">IRS Estimated Tax FAQ</a>
+          <a href="https://www.irs.gov/publications/p505" target="_blank" rel="noopener noreferrer">IRS Publication 505</a>
+          <a href="https://www.irs.gov/forms-pubs/about-form-2210" target="_blank" rel="noopener noreferrer">Form 2210 Overview</a>
+        </div>
       </section>
     </main>
 

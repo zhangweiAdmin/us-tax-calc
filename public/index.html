@@ -300,62 +300,85 @@
       </div>
 
       <section class="guide-card">
-        <h3>How This Estimate Works</h3>
+        <h3>How I Use This Page In A Real Month</h3>
         <p>
-          We start from gross freelance income, subtract business expenses, then estimate self-employment tax and
-          federal/state income tax based on your filing status and selected state. The output is directional planning
-          data, not a filed return.
+          I start here when freelance income lands in uneven chunks and I want a clean baseline before I decide how
+          much tax money to move out of operating cash. The calculator is most useful when the year is not perfectly
+          tidy, which is most years in real life.
         </p>
-        <h3>Use It In A Repeatable Routine</h3>
+        <p>
+          A large client payment can change the answer faster than most people expect. That is why I like to run this
+          page again after a meaningful invoice instead of waiting until the quarter is almost over.
+        </p>
+        <h3>What Usually Moves The Result</h3>
         <ul>
-          <li>Update income and expense numbers at least once per month.</li>
-          <li>Compare quarterly estimate against your tax reserve account balance.</li>
-          <li>Re-run after major income changes, not only at deadline week.</li>
+          <li>Business expenses that repeat every month versus one-off purchases.</li>
+          <li>State choice when you work across state lines or change residences mid-year.</li>
+          <li>Household withholding and other income that should be folded into the bigger tax picture.</li>
+        </ul>
+        <p>
+          Once the baseline looks sensible, move to
+          <a href="/safe-harbor-calculator">Safe Harbor</a> to see what still needs to be covered before the next
+          estimated-payment deadline.
+        </p>
+      </section>
+
+      <section class="guide-card">
+        <h3>Reference Checkpoints</h3>
+        <p>
+          I keep a short reference list next to the calculator so I can sanity-check the parts that are easy to
+          forget:
+        </p>
+        <ul>
+          <li><a href="https://www.irs.gov/faqs/estimated-tax" target="_blank" rel="noopener noreferrer">IRS Estimated Tax FAQ</a></li>
+          <li><a href="https://www.irs.gov/publications/p505" target="_blank" rel="noopener noreferrer">IRS Publication 505</a></li>
+          <li><a href="https://www.irs.gov/publications/p587" target="_blank" rel="noopener noreferrer">IRS Publication 587</a></li>
+          <li><a href="https://www.consumerfinance.gov/" target="_blank" rel="noopener noreferrer">CFPB consumer guidance</a></li>
         </ul>
       </section>
 
       <section class="faq-card">
         <h3>Freelance Tax FAQ</h3>
         <dl>
-          <dt>Should I include non-freelance W-2 income in this tool?</dt>
+          <dt>Should I include W-2 wages in this tool?</dt>
           <dd>
-            No. This page is meant for freelance business income planning. If you also have W-2 wages, use this as a
-            partial estimate and combine it with a full tax projection before filing.
+            No. Treat this as the freelance side of the return. If you also have W-2 wages, combine this estimate with
+            a fuller return view before you decide on quarterly payments.
           </dd>
-          <dt>Why does self-employment tax look high?</dt>
+          <dt>Why does self-employment tax move the result so much?</dt>
           <dd>
-            Self-employment tax covers both the employee and employer portions of Social Security and Medicare, so it
-            is usually higher than first-time freelancers expect.
+            Because it covers both the employer and employee side of Social Security and Medicare. That is why the
+            first rough guess often feels too low.
           </dd>
-          <dt>Can I rely on this for quarterly estimates?</dt>
+          <dt>Can I rely on this for quarterly planning?</dt>
           <dd>
-            Yes, for rough planning. The quarterly figure is useful for budgeting, but final payments should account
-            for credits, prior-year safe harbor rules, and any other household income.
+            Yes, as a planning baseline. I would still check credits, household withholding, and safe-harbor rules
+            before sending money.
           </dd>
-          <dt>What does the Safe Harbor calculator add?</dt>
+          <dt>What should I do after a large client payment?</dt>
           <dd>
-            It compares the 90% current-year rule against the 100%/110% prior-year rule, then estimates how much
-            remains to be paid across the installments left in the year.
-          </dd>
-          <dt>How often are tax assumptions refreshed?</dt>
-          <dd>
-            The backend refreshes source tax tables regularly and stores update metadata. If live fetching fails, the
-            app falls back to the last successful dataset to avoid downtime.
+            Re-run the calculator. One large invoice can move the reserve target enough that last month&#39;s number is
+            no longer the one to trust.
           </dd>
           <dt>Which filing statuses are supported?</dt>
           <dd>
-            Single, Married Filing Jointly, and Head of Household. Choose the one that matches your actual filing plan
-            to keep bracket assumptions aligned.
+            Single, Married Filing Jointly, and Head of Household. Pick the one you actually expect to file, not the
+            one that looks convenient in the moment.
           </dd>
         </dl>
       </section>
       <section class="footnote-card">
         <h3>Compliance Notes</h3>
         <ul>
-          <li>This site provides estimates only and is not legal or tax advice.</li>
-          <li>Tax rates are refreshed daily by server-side scraping from public tax data pages.</li>
-          <li>Always verify with IRS/state authorities or a licensed CPA before filing.</li>
+          <li>This site provides planning estimates only and is not legal or tax advice.</li>
+          <li>State results can change if you move, work remotely, or have income sourced in more than one state.</li>
+          <li>Before filing, verify the final position with IRS guidance, state guidance, or a licensed CPA.</li>
         </ul>
+        <div class="compliance-links">
+          <a href="https://www.irs.gov/faqs/estimated-tax" target="_blank" rel="noopener noreferrer">IRS Estimated Tax FAQ</a>
+          <a href="https://www.irs.gov/publications/p505" target="_blank" rel="noopener noreferrer">IRS Publication 505</a>
+          <a href="https://www.irs.gov/publications/p587" target="_blank" rel="noopener noreferrer">IRS Publication 587</a>
+        </div>
       </section>
     </main>
 
