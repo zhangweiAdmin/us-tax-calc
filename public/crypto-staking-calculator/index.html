@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>__SEO_TITLE__</title>
     <meta name="description" content="__SEO_DESCRIPTION__" />
+    <meta name="keywords" content="__SEO_KEYWORDS__" />
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     <link rel="canonical" href="__SEO_CANONICAL_URL__" />
@@ -113,7 +114,8 @@
         <p>
           I use this page when I want a reward-side estimate without mixing in token price swings. That separation
           matters because a staking position can look healthy in reward terms and still feel very different in dollar
-          terms if the market moves.
+          terms if the market moves. If you are comparing staking APY vs APR, this page keeps the reward math and the
+          tax planning side in separate lanes.
         </p>
         <p>
           The most useful thing about the calculator is not the biggest APY number. It is the way it forces me to
@@ -143,7 +145,7 @@
       <div class="grid">
         <form id="stakingForm" class="card form-card">
           <h2>Multi-Chain Staking Calculator</h2>
-          <p class="card-note">Allocate principal across chains and estimate annual compounded yield.</p>
+          <p class="card-note">Compare staking APY vs APR across chains and test compounding assumptions.</p>
           <div class="form-grid">
             <div class="form-row form-row-2">
               <div class="field">
@@ -199,11 +201,15 @@
         <ul>
           <li>Validator commission and uptime history.</li>
           <li>Unbonding periods and liquidity constraints.</li>
-          <li>Tax recordkeeping method for reward events.</li>
+          <li>Tax recordkeeping method for staking rewards tax planning and reward events.</li>
         </ul>
         <p>
           If your allocation does not total 100%, the model normalizes weights. That keeps comparisons consistent, but
           you should still document your intended policy before deploying capital.
+        </p>
+        <p>
+          When staking rewards start getting larger, I keep the tax log separate from the yield model so the planning
+          stays readable.
         </p>
       </section>
 

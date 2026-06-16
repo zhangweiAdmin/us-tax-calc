@@ -1475,3 +1475,45 @@ Format:
 - Action: Completed VPS deployment and verified the public HTTPS site and health endpoint after restart.
 - Result: us-tax-calc.service is active, https://zlxjy.com/api/health returns OK JSON, and the homepage shows the rewritten scenario-based content.
 - Next: Commit the updated files and push them to the remote GitHub repository.
+
+## 2026-06-15 23:30:05 CST
+- Step: 77
+- Action: Created a git commit for the deployment-ready content updates.
+- Result: Commit 72b4b91 was created on master with the calculator page, trust page, and tax data changes.
+- Next: Push the commit to the remote GitHub repository.
+
+## 2026-06-15 23:33:18 CST
+- Step: 78
+- Action: Pushed the commit to the remote GitHub repository after successful VPS deployment.
+- Result: Remote master advanced to 72b4b91 and the public site is live with the updated calculator and trust content.
+- Next: None.
+
+## 2026-06-15 23:32:53 CST
+- Step: 79
+- Action: Started replacing remaining project contact addresses from contact@zlxjy.com to coco@zlxjy.com.
+- Result: Found remaining occurrences in contact, authors, editorial policy, and privacy policy pages.
+- Next: Update the remaining links and re-scan the repository for any old address references.
+
+## 2026-06-15 23:33:36 CST
+- Step: 80
+- Action: Replaced the remaining contact email references with coco@zlxjy.com and rescanned the project.
+- Result: No contact@zlxjy.com references remain in the repository; the four site pages now point to the Coco address.
+- Next: If requested, deploy and push this email update so the live site matches the repository.
+
+## 2026-06-16 22:01:22 CST
+- Step: 81
+- Action: Mapped the requested SEO keywords to the five core calculator pages and added page-level keyword metadata to the server catalog.
+- Result: The homepage, Safe Harbor, Home Office, Mortgage Refinance, and Crypto Staking pages now each carry a focused keyword set in metadata and structured data.
+- Next: Update the visible page copy and head tags so the keywords also appear in the rendered HTML.
+
+## 2026-06-16 22:01:22 CST
+- Step: 82
+- Action: Updated the five calculator templates with `meta name="keywords"` tags and revised the supporting copy to mention the target phrases naturally.
+- Result: The rendered homepage and calculator pages now surface phrases like freelance tax calculator by state, quarterly safe harbor calculator, home office simplified method, refinance breakeven calculator, and staking APY vs APR.
+- Next: Run a syntax check and confirm the live-rendered HTML includes the new metadata.
+
+## 2026-06-16 22:01:22 CST
+- Step: 83
+- Action: Validated the server with `node --check` and confirmed the local HTML render includes the new keywords and updated title/description text.
+- Result: The app server starts cleanly, and the rendered HTML shows the expected SEO metadata on the homepage, Safe Harbor page, and Mortgage Refinance page.
+- Next: If requested, deploy the updated site and push the commit to the remote repository.

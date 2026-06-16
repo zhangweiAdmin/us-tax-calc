@@ -32,12 +32,19 @@ const PAGE_CATALOG = [
     path: "/",
     templatePath: "index.html",
     initialTab: "freelance",
-    title: "Freelance Tax Calculator by State | US Calculator Hub",
+    title: "Freelance Tax Calculator by State | Estimated Tax Calculator for Freelancers | US Calculator Hub",
     description:
-      "Estimate federal income tax, self-employment tax, and state income tax for U.S. freelance income, then carry the result into home-office and safe-harbor planning.",
+      "Freelance tax calculator by state for U.S. freelancers who want an estimated tax calculator for freelancers, with federal income tax, self-employment tax, and state income tax planning.",
     heading: "Freelance Tax Calculator",
     subhead:
       "Estimate a freelance tax baseline with state-aware assumptions, then use the result for home-office and quarterly payment planning.",
+    keywords: [
+      "freelance tax calculator by state",
+      "estimated tax calculator for freelancers",
+      "freelance taxes calculator",
+      "quarterly estimated tax calculator",
+      "state freelance tax planning"
+    ],
     about: [{ "@type": "Thing", name: "Freelance Tax Calculator" }],
     faqs: [
       {
@@ -71,12 +78,19 @@ const PAGE_CATALOG = [
     path: "/safe-harbor-calculator",
     templatePath: "safe-harbor-calculator/index.html",
     initialTab: "freelance",
-    title: "Quarterly Safe Harbor Calculator | Estimated Tax Planning",
+    title: "Quarterly Safe Harbor Calculator | Estimated Tax Safe Harbor | US Calculator Hub",
     description:
-      "Estimate the smaller of the current-year 90% rule and the prior-year 100% or 110% rule, then pace the remaining quarterly payments.",
+      "Use this quarterly safe harbor calculator to compare the 90% current-year rule with the prior-year 100% or 110% floor, then pace the remaining estimated tax payments.",
     heading: "Quarterly Safe Harbor Calculator",
     subhead:
       "Use prior-year tax, current-year projections, and payments already made to see how much is left before the next deadline.",
+    keywords: [
+      "safe harbor calculator",
+      "quarterly safe harbor calculator",
+      "estimated tax safe harbor calculator",
+      "quarterly estimated tax safe harbor",
+      "110% prior-year safe harbor"
+    ],
     about: [{ "@type": "Thing", name: "Quarterly Safe Harbor Calculator" }],
     faqs: [
       {
@@ -115,12 +129,18 @@ const PAGE_CATALOG = [
     path: "/home-office-deduction-calculator",
     templatePath: "home-office-deduction-calculator/index.html",
     initialTab: "freelance",
-    title: "Home Office Deduction Calculator | US Calculator Hub",
+    title: "Home Office Deduction Calculator | Home Office Simplified Method | US Calculator Hub",
     description:
       "Compare the simplified home-office method with an actual-expense estimate for a dedicated workspace used regularly and exclusively for business.",
     heading: "Home Office Deduction Calculator",
     subhead:
       "See whether the simplified rule or a real-expense allocation gives you the cleaner planning answer for your workspace.",
+    keywords: [
+      "home office deduction calculator",
+      "home office simplified method",
+      "home office calculator",
+      "simplified method home office deduction"
+    ],
     about: [{ "@type": "Thing", name: "Home Office Deduction Calculator" }],
     faqs: [
       {
@@ -154,12 +174,18 @@ const PAGE_CATALOG = [
     path: "/mortgage-refinance-calculator",
     templatePath: "mortgage-refinance-calculator/index.html",
     initialTab: "mortgage",
-    title: "Mortgage Refinance Calculator | US Calculator Hub",
+    title: "Mortgage Refinance Calculator | Refinance Breakeven Calculator | US Calculator Hub",
     description:
-      "Compare refinance payment savings, closing-cost payback, and lifetime interest impact before you lock a new loan.",
+      "Compare refinance payment savings, closing-cost payback, and lifetime interest impact with a refinance breakeven calculator before you lock a new loan.",
     heading: "Mortgage Refinance Calculator",
     subhead:
-      "Run a rate-first and a fee-first scenario side by side so the refinance decision lines up with your actual holding period.",
+      "Run a rate-first and a fee-first scenario side by side so the refinance decision lines up with your actual holding period and points tradeoff.",
+    keywords: [
+      "mortgage refinance calculator",
+      "refinance breakeven calculator",
+      "points vs no points refinance",
+      "refinance points and closing costs"
+    ],
     about: [{ "@type": "Thing", name: "Mortgage Refinance Calculator" }],
     faqs: [
       {
@@ -198,12 +224,18 @@ const PAGE_CATALOG = [
     path: "/crypto-staking-calculator",
     templatePath: "crypto-staking-calculator/index.html",
     initialTab: "staking",
-    title: "Crypto Multi-Chain Staking Calculator | US Calculator Hub",
+    title: "Crypto Staking Calculator | Staking APY vs APR | US Calculator Hub",
     description:
-      "Estimate portfolio staking rewards across multiple chains with APY, compounding frequency, and allocation weights while keeping price risk separate.",
+      "Estimate portfolio staking rewards across multiple chains with staking APY vs APR assumptions, compounding frequency, and allocation weights while keeping price risk separate.",
     heading: "Crypto Multi-Chain Staking Calculator",
     subhead:
-      "Model reward-side return scenarios by chain so APY assumptions, lockups, and validator risk stay visible.",
+      "Model reward-side return scenarios by chain so APY assumptions, lockups, validator risk, and staking rewards tax planning stay visible.",
+    keywords: [
+      "staking APY vs APR",
+      "staking rewards tax planning",
+      "crypto staking calculator",
+      "staking APR vs APY"
+    ],
     about: [{ "@type": "Thing", name: "Crypto Staking Calculator" }],
     faqs: [
       {
@@ -445,7 +477,8 @@ function buildSeoStructuredData(baseUrl, page) {
         name: "US Calculator Hub",
         url: homeUrl
       },
-      about: pageAbout
+      about: pageAbout,
+      keywords: page.keywords?.join(", ")
     }
   ];
 
@@ -558,6 +591,7 @@ async function renderPageHtml(req, page = DEFAULT_PAGE) {
   return template
     .replaceAll("__SEO_TITLE__", page.title)
     .replaceAll("__SEO_DESCRIPTION__", page.description)
+    .replaceAll("__SEO_KEYWORDS__", page.keywords?.join(", ") || "")
     .replaceAll("__SEO_CANONICAL_URL__", canonicalUrl)
     .replace("__SEO_STRUCTURED_DATA__", structuredData)
     .replaceAll("__INITIAL_TAB__", page.initialTab)
