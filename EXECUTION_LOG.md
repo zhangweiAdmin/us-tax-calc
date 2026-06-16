@@ -1517,3 +1517,9 @@ Format:
 - Action: Validated the server with `node --check` and confirmed the local HTML render includes the new keywords and updated title/description text.
 - Result: The app server starts cleanly, and the rendered HTML shows the expected SEO metadata on the homepage, Safe Harbor page, and Mortgage Refinance page.
 - Next: If requested, deploy the updated site and push the commit to the remote repository.
+
+## 2026-06-16 22:01:22 CST
+- Step: 84
+- Action: Added a dedicated Search Console recrawl checklist for the five priority pages and linked it from the README.
+- Result: The project now has a reusable recrawl order and URL inspection flow for the homepage, Safe Harbor, Home Office, Mortgage Refinance, and Crypto Staking pages.
+- Next: If needed, submit the sitemap and request indexing for each URL in Google Search Console.

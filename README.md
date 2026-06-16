@@ -120,6 +120,10 @@ SITE_URL=https://your-domain.com npm start
 2. 使用 Search Console 的 URL 检查工具请求首页重新抓取
 3. 每次关键内容改动后复查 “已编入索引” 状态和抓取错误
 
+如果你想先处理最重要的 5 个页面，可以直接按这份清单逐页请求抓取：
+
+- [Search Console Recrawl Checklist](docs/search-console-recrawl-checklist.md)
+
 ## 5.1 长文内容库
 
 项目已内置可重复生成的长文页面脚本（每篇自动校验不少于 800 词）：
