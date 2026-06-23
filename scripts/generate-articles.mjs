@@ -1106,11 +1106,41 @@ const articles = [
     ]
   },
   {
+    slug: "midyear-freelance-tax-reset-before-september",
+    title: "The Midyear Freelance Tax Reset I Do Before September Gets Expensive",
+    description:
+      "A practical midyear tax reset for freelancers who want to catch reserve gaps, review Safe Harbor, and clean up home-office assumptions before the September deadline.",
+    publishedAt: "2026-06-23",
+    bodyPath: "content/articles/midyear-freelance-tax-reset-before-september.html",
+    faq: [
+      {
+        q: "Why do a midyear tax reset instead of waiting for year end?",
+        a: "Midyear is early enough to fix reserve gaps and late enough to have real income data. Waiting until December usually leaves fewer clean options."
+      },
+      {
+        q: "Should I use current-year estimates or Safe Harbor at midyear?",
+        a: "I compare both. Safe Harbor gives me a penalty-risk floor, while the current-year estimate tells me whether the actual business year is drifting above or below that floor."
+      },
+      {
+        q: "What records should freelancers check in June or July?",
+        a: "Review collected income, unpaid invoices, business expenses, federal payments, state payments, withholding, home-office facts, and any large one-time purchases."
+      },
+      {
+        q: "Does the home-office deduction change quarterly tax planning?",
+        a: "It can. A realistic home-office estimate may lower projected taxable income, but I still treat it as an assumption until the records support it."
+      },
+      {
+        q: "What if my tax reserve is behind by midyear?",
+        a: "Do not wait for the next deadline to admit it. Calculate the gap, split it across upcoming client payments if possible, and document the catch-up rule."
+      }
+    ]
+  },
+  {
     slug: "state-tax-differences-for-mobile-freelancers",
     title: "State Tax Differences for Mobile Freelancers: Planning Before It Gets Messy",
     description:
       "A practical primer for freelancers who move states or work remotely across state lines.",
-    publishOffsetDays: 12,
+    publishedAt: "2026-06-03",
     audience: "freelancers with cross-state exposure",
     scenario:
       "A consultant moved mid-year and billed clients in multiple states but tracked income in one undifferentiated category.",
@@ -1160,7 +1190,7 @@ const articles = [
     title: "Quarterly Estimate Strategy with a Safe-Harbor Mindset for Freelancers",
     description:
       "How to use safe-harbor planning mindset to reduce penalty risk while preserving cash flow flexibility.",
-    publishOffsetDays: 10,
+    publishedAt: "2026-06-05",
     audience: "freelancers optimizing quarterly estimate strategy",
     scenario:
       "A freelancer is unsure whether to pay aggressively every quarter or preserve liquidity and reconcile later.",
@@ -1210,7 +1240,7 @@ const articles = [
     title: "The Calculator Inputs That Change Your Tax Result the Most",
     description:
       "A practical walkthrough of the few calculator inputs that usually move freelance tax estimates the most.",
-    publishOffsetDays: 8,
+    publishedAt: "2026-06-07",
     audience: "users of freelance tax calculators",
     scenario:
       "A user updates random fields repeatedly but cannot tell which inputs actually matter to the final estimate.",
@@ -1260,7 +1290,7 @@ const articles = [
     title: "A Calm Year-End Closeout for Freelancers: What To Do Before December Turns Into Panic",
     description:
       "A practical year-end checklist for freelancers to reduce filing-season chaos and improve tax confidence.",
-    publishOffsetDays: 6,
+    publishedAt: "2026-06-09",
     audience: "freelancers preparing for year-end close",
     scenario:
       "A freelancer reaches December with decent revenue but unclear records, uncertain reserves, and no closeout plan.",
@@ -1310,7 +1340,7 @@ const articles = [
     title: "Staking APR, APY, and Freelance Taxes: How To Estimate the Whole Year Without Guessing",
     description:
       "A practical guide for readers searching staking APR, staking APY, freelance income calculators, and safe harbor rules in one place.",
-    publishOffsetDays: 0,
+    publishedAt: "2026-06-15",
     bodyPath: "content/articles/staking-apr-apy-freelance-tax-guide.html",
     faq: [
       {
@@ -1344,7 +1374,7 @@ const articles = [
     title: "Why I Treat Tax Money Like It Already Has a Job",
     description:
       "A finance-minded look at why quarterly taxes get easier when you split cash into jobs, protect the reserve, and use the calculator as a check rather than a guess.",
-    publishOffsetDays: 0,
+    publishedAt: "2026-06-15",
     bodyPath: "content/articles/tax-money-already-has-a-job.html",
     faq: [
       {
@@ -1374,7 +1404,7 @@ const articles = [
     title: "Safe Harbor in Real Life: What 10 Years in Finance Taught Me About Quarterly Taxes",
     description:
       "A plain-English Safe Harbor guide from the perspective of a finance professional who has spent a decade helping people keep quarterly taxes predictable.",
-    publishOffsetDays: 2,
+    publishedAt: "2026-06-13",
     bodyPath: "content/articles/safe-harbor-in-real-life-10-years-finance.html",
     faq: [
       {
@@ -1404,7 +1434,7 @@ const articles = [
     title: "A Freelance Safe Harbor Playbook: How To Pay Quarterly Taxes Without Guessing Every Deadline",
     description:
       "A practical Safe Harbor planning guide for freelancers who want calmer quarterly tax payments and fewer penalty surprises.",
-    publishOffsetDays: 4,
+    publishedAt: "2026-06-11",
     audience: "freelancers and independent contractors with uneven income",
     scenario:
       "A web developer has one strong quarter, one slow quarter, and a late client payment that lands in December. Every due date feels like a brand-new puzzle, and by September she is no longer sure whether she should follow current-year estimates or lean on the prior-year safe harbor. She is not lazy, and she is not avoiding the issue. She simply does not have a written process that tells her what to do when income swings.",
@@ -1546,7 +1576,16 @@ function renderFaqSchema(article) {
 function getArticlePublishMeta(index) {
   let date;
   const article = articles[index];
-  if (article?.publishOffsetDays !== undefined) {
+  if (article?.publishedAt) {
+    const raw = String(article.publishedAt).trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+      throw new Error(`Invalid publishedAt date for ${article.slug}: ${raw}`);
+    }
+    date = new Date(`${raw}T00:00:00Z`);
+    if (!Number.isFinite(date.getTime())) {
+      throw new Error(`Invalid publishedAt date for ${article.slug}: ${raw}`);
+    }
+  } else if (article?.publishOffsetDays !== undefined) {
     const now = new Date();
     date = new Date(
       Date.UTC(

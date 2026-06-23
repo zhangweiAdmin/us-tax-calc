@@ -1523,3 +1523,27 @@ Format:
 - Action: Added a dedicated Search Console recrawl checklist for the five priority pages and linked it from the README.
 - Result: The project now has a reusable recrawl order and URL inspection flow for the homepage, Safe Harbor, Home Office, Mortgage Refinance, and Crypto Staking pages.
 - Next: If needed, submit the sitemap and request indexing for each URL in Google Search Console.
+
+## 2026-06-23 23:13:39 CST
+- Step: 85
+- Action: Added a new long-form article, `The Midyear Freelance Tax Reset I Do Before September Gets Expensive`, with a fixed publication date of 2026-06-23.
+- Result: The article body was written as a hand-authored finance/tax planning guide and added under `content/articles/midyear-freelance-tax-reset-before-september.html`.
+- Next: Regenerate article pages and confirm word count, date ordering, and published metadata.
+
+## 2026-06-23 23:13:39 CST
+- Step: 86
+- Action: Updated the article generator so already-published manual articles can use fixed `publishedAt` dates instead of floating relative offsets.
+- Result: Regeneration no longer shifts the publication dates of previously published manual articles.
+- Next: Run the article generator and validate the generated public article output.
+
+## 2026-06-23 23:13:39 CST
+- Step: 87
+- Action: Regenerated the article library and validated the new article metadata.
+- Result: The article library now contains 29 articles; the new article has 3,132 words and publishes as June 23, 2026 at the top of the article index.
+- Next: Deploy the generated article to production and verify the live URL.
+
+## 2026-06-23 23:15:58 CST
+- Step: 88
+- Action: Deployed the regenerated article library to the VPS and restarted `us-tax-calc.service`.
+- Result: The public HTTPS health endpoint is healthy, the new article URL renders with `datePublished` 2026-06-23, the article index lists the article at the top, and the sitemap includes the new URL.
+- Next: Commit the article, generated public pages, and deployment log to the remote repository.
